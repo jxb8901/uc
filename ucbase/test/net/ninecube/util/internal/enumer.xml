@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE enums PUBLIC 
+		"-//ninecube//enumer1.0//EN" 
+		"http://www.ninecube.net/saturn/enumer.dtd">
+
+<enums>
+
+	<include file="net/ninecube/util/internal/enumer-include.xml" />
+	
+	<enum name="sextp" desc="性别">
+		<type value="0" desc="男" />
+		<type value="1" desc="女" />
+	</enum>
+	
+	<enum name="trancy" desc="币种">
+		<type value="01" desc="人民币" />
+		<type value="02" desc="美元" />
+		<type value="03" desc="欧元" />
+	</enum>
+</enums>

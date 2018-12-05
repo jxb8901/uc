@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!ELEMENT enums (enum | include)* >
+
+<!ELEMENT include EMPTY>
+<!ATTLIST include
+    file CDATA #REQUIRED
+>
+
+<!ELEMENT enum (type*)>
+<!ATTLIST enum
+	name CDATA #REQUIRED
+	desc CDATA #REQUIRED
+	javaclass  CDATA  #IMPLIED
+>
+
+<!ELEMENT type EMPTY>
+<!ATTLIST type
+	value CDATA #REQUIRED
+	desc CDATA #REQUIRED
+>
+
+
+
+

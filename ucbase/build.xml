@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<project name="ucbase" default="compile" basedir=".">
+
+  <!--
+
+  -->
+
+  <property name="project.name" value="ucbase"/>
+  <property name="build.dir" value="build"/>
+
+  <property name="etc.dir" value="etc"/>
+  <property name="src.dir" value="src"/>
+  <property name="conf.dir" value="src"/>
+  <property name="test.src.dir" value="test"/>
+  <property name="classes.dir" value="${build.dir}/classes"/>
+  <property name="test.classes.dir" value="${build.dir}/test/classes"/>
+
+  <property name="test.report.dir" value="${build.dir}/test/result"/>
+  <property name="lib.dir" value="lib"/>
+  <property name="build.lib.dir" value="lib"/>
+  
+  <property name="copydest" value="../venus/web/WEB-INF/lib ../saturn/lib ../mars/lib/runtime" />
+  
+  <property file="build.properties"/>
+
+  <path id="project.classes.path">
+    <pathelement location="${classes.dir}"/>
+    <pathelement location="${test.classes.dir}"/>
+    <fileset dir="${build.lib.dir}">
+      <include name="**/*.jar"/>
+    </fileset>
+    <fileset dir="${lib.dir}">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+  <!-- ============================================================================= -->
+  <!-- 初始化                                                                        -->
+  <!-- ============================================================================= -->
+  <target name="init">
+    <tstamp/>
+    <available classname="java.nio.Buffer" property="websphere.java.compiler"/>
+  </target>
+
+  <!-- ============================================================================= -->
+  <!-- 准备构建目录                                                                  -->
+  <!-- ============================================================================= -->
+  <target name="prepare" depends="init" description="prepare development project">
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${classes.dir}"/>
+    <mkdir dir="${test.classes.dir}"/>
+    <mkdir dir="${test.src.dir}"/>
+    <mkdir dir="${test.report.dir}"/>
+  </target>
+
+  <!-- ============================================================================= -->
+  <!-- 编译代码                                                                      -->
+  <!-- ============================================================================= -->
+  <target name="compile" depends="prepare" description="compile without generate code">
+    <javac destdir="${classes.dir}" encoding="UTF-8" fork="yes">
+      <src path="${src.dir}"/>
+      <classpath refid="project.classes.path"/>
+    </javac>
+    <copy todir="${classes.dir}">
+      <fileset dir="${conf.dir}">
+        <include name="*.*"/>
+      </fileset>
+      <fileset dir="${conf.dir}">
+        <include name="**/*.xml"/>
+        <include name="**/interfaces.*"/>
+      </fileset>
+    </copy>
+    <echo message="source compiled"/>
+  </target>
+
+  <!-- ============================================================================= -->
+  <!-- 编译测试代码                                                                  -->
+  <!-- ============================================================================= -->
+  <target name="compile.test" depends="compile" description="compile Java unit test source code">
+    <javac destdir="${test.classes.dir}" debug="${debug}" fork="yes">
+      <src path="${test.src.dir}"/>
+      <classpath refid="project.classes.path"/>
+    </javac>
+    <copy todir="${test.classes.dir}">
+      <fileset dir="${test.src.dir}">
+        <include name="*.*"/>
+      </fileset>
+    </copy>
+    <echo message="unit test source compiled"/>
+  </target>
+
+  <!-- ============================================================================= -->
+  <!-- 打包                                                                          -->
+  <!-- ============================================================================= -->
+  <target name="jar" depends="compile">
+  	<taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" classpath="lib/jarjar-0.7.jar"/>
+  	<jarjar jarfile="${build.dir}/${project.name}.jar" manifest="${etc.dir}/META-INF/MANIFEST.MF">
+		<fileset dir="${etc.dir}"/>
+		<fileset dir="${classes.dir}"/>
+		<zipfileset src="lib/asm-3.0.jar"/>
+		<zipfileset src="lib/asm-commons-3.0.jar"/>
+		<rule pattern="org.objectweb.asm.**" result="net.ninecube.util.asm.@1"/>
+	</jarjar>
+  </target>
+  
+  <target name="t" >
+  	<tempfile property="temp.file" destDir="build"/>
+  	<echo>${temp.file}</echo>
+  </target>
+  
+</project>
