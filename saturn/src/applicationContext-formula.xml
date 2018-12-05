@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  - Application context definition for JPetStore's business layer.
+  - Contains bean references to the transaction manager and to the DAOs in
+  - dataAccessContext-local/jta.xml (see web.xml's "contextConfigLocation").
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="formulaEngine" class="net.ninecube.formula.impl.FormulaEngineImpl">
+		<property name="formulaResolver" ref="formulaResolver"/>
+		<property name="targetManager" ref="targetManager"/>
+	</bean>
+	
+	<bean id="ruleEngine" class="net.ninecube.saturn.impl.RuleEngineImpl">
+		<property name="databaseManager" ref="databaseManager" />
+	</bean>
+	
+	<bean id="databaseManager" class="net.ninecube.saturn.database.impl.DatabaseManagerImpl" init-method="reload">
+		<constructor-arg type="java.lang.String" value="database.xml"/>
+	</bean>
+
+	<!-- 必须在其它配置中定义typedTargetManagers属性 -->
+	<bean id="targetManager" parent="typedTargetManagers" class="net.ninecube.formula.impl.TargetManagerSupport">
+		<property name="ruleEngine" ref="ruleEngine"/>
+		<property name="managers">
+			<list merge="true" />
+		</property>
+	</bean>
+</beans>

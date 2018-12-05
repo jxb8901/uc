@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" output="build/test/classes" path="test"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="lib/junit.jar" sourcepath="lib/junitsrc.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang-2.1.jar"/>
+	<classpathentry kind="lib" path="lib/jparsec-1.1.jar" sourcepath="/jparsec"/>
+	<classpathentry kind="lib" path="lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/jaxen-1.1-beta-12.jar"/>
+	<classpathentry kind="lib" path="lib/saxpath.jar"/>
+	<classpathentry kind="lib" path="lib/jrc.jar" sourcepath="lib/src/jrcSrc.jar"/>
+	<classpathentry kind="lib" path="lib/hsqldb.jar"/>
+	<classpathentry kind="lib" path="lib/mysqlconnectorfull.jar"/>
+	<classpathentry kind="lib" path="lib/junitsrc.jar"/>
+	<classpathentry exported="true" kind="lib" path="build/groovy"/>
+	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
+	<classpathentry kind="lib" path="lib/spring-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/dimple5-0.3.jar" sourcepath="lib/src/dimple5-0.3.src.jar"/>
+	<classpathentry kind="lib" path="lib/groovy-all-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/commons-beanutils.jar"/>
+	<classpathentry kind="lib" path="lib/jtds-1.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ucbase"/>
+	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

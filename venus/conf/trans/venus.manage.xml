@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE venus PUBLIC 
+		"-//ninecube//venus1.0//EN" 
+		"http://www.ninecube.net/venus/venus.dtd">
+
+<venus>
+	
+	<package name="task" cname="系统管理" >
+		<package name="definition" cname="任务管理" >
+			<model entity="taskDefinition" class="net.ninecube.core.task.TaskDefinition">
+				<field name="idno" cname="ID" key="true" />
+				<field name="name" cname="名称" />
+				<field name="group" cname="组" />
+				<field name="description" cname="描述" />
+			</model>
+			<transaction name="getTasks" cname="任务列表" type="reflect" >
+			</transaction>
+			<transaction name="run" cname="执行任务" />
+		</package>
+		<package name="status" cname="任务调度" >
+			<model entity="taskStatus" class="net.ninecube.core.task.TaskStatus">
+				<field name="idno" cname="ID" key="true" />
+				<modelfields name="detail" cname="任务定义" model="taskDefinition">name</modelfields>
+				<field name="startDateTime" cname="开始时间" />
+				<field name="status" cname="运行状态" />
+			</model>
+			<transaction name="getExecutingTasks" cname="任务调度" type="reflect" >
+			</transaction>
+		</package>
+	</package>
+	
+</venus>
+
+
+

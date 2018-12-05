@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+  <class table="TUser" name="net.ninecube.venus.domain.User">
+    <meta inherit="true" attribute="auto-generated"/>
+    <id access="property" name="idno">
+      <generator class="native"/>
+    </id>
+    <property name="creationDate" access="property"/>
+    <property name="disabled" access="property"/>
+    <property name="disabledDate" access="property"/>
+    <property name="ip" access="property"/>
+    <property name="lastAccessDate" access="property"/>
+    <property name="name" access="property"/>
+    <property name="password" access="property"/>
+    <bag table="TUserRoles" access="property" lazy="false" name="roles">
+      <key column="userId"/>
+      <many-to-many column="roleId" class="net.ninecube.venus.domain.Role"/>
+    </bag>
+    <map table="TUserInfo" access="property" lazy="true" cascade="all" name="userInfo">
+      <key column="userId"/>
+      <index type="java.lang.String" column="name" length="80"/>
+      <element type="java.lang.String" column="val"/>
+    </map>
+    <property name="superuser" access="property"/>
+  </class>
+  <query name="getUserByName"><![CDATA[from User where name=:name]]></query>
+</hibernate-mapping>

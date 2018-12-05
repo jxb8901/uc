@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+  <class table="TStudentForTest" name="net.ninecube.test.domain.Student">
+    <meta inherit="true" attribute="auto-generated"/>
+    <id access="property" name="idno">
+      <generator class="native"/>
+    </id>
+    <property name="name" access="property"/>
+    <many-to-one access="property" name="peer"/>
+    <bag table="TStudentClassMates" access="property" lazy="true" inverse="false" name="classmate">
+      <key column="eid"/>
+      <many-to-many column="mid" class="net.ninecube.test.domain.Student"/>
+    </bag>
+    <property name="mainrole" access="property"/>
+    <bag table="TStudentRoles" access="property" lazy="true" inverse="false" name="roles">
+      <key column="sid"/>
+      <element type="string" column="role"/>
+    </bag>
+  </class>
+</hibernate-mapping>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE venus PUBLIC "-//ninecube//venus1.0//EN" "http://www.ninecube.net/venus/venus.dtd">
+
+<venus>
+
+	<package name="test" cname="测试" >
+		<model entity="test_student" class="net.ninecube.test.domain.Student">
+			<field name="idno" cname="ID" type="integer" key="true" />
+			<field name="name" cname="名称" maxlen="20" req="true" />
+			<modelfields name="peer" cname="同桌" model="test_student" >name</modelfields>
+			<modelfields name="classmate" cname="同学" model="test_student" multi="true" >idno, name</modelfields>
+			<enumfield name="mainrole" cname="主要角色" enum="user.role" />
+			<enumfield name="roles" cname="角色" enum="user.role" multi="true" />
+		</model>
+
+		<transaction name="query" cname="查询" >
+			<input>
+				<queryfield name="name" op="like" />
+			</input>
+			<output>
+				<includefields tagtype="text">*</includefields>
+				<mergefield name="idno" tagtype="radio" />
+			</output>
+		</transaction>
+		
+		<transaction name="read" cname="查看" />
+		<transaction name="create" cname="新建" />
+		<transaction name="update" cname="修改" />
+		<transaction name="delete" cname="删除" />
+		
+	</package>
+		
+</venus>
+
+
+

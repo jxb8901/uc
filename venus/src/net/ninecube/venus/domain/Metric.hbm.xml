@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+  <class table="TMetric" name="net.ninecube.venus.domain.Metric">
+    <meta inherit="true" attribute="auto-generated"/>
+    <id access="property" name="idno">
+      <generator class="native"/>
+    </id>
+    <property name="description" access="property"/>
+    <property name="formula" access="property"/>
+    <property name="type" access="property"/>
+    <property name="frequence" type="net.ninecube.core.util.FrequenceUserType" access="property"/>
+    <property name="name" access="property"/>
+    <property name="ratio" access="property"/>
+    <property name="unit" access="property"/>
+  </class>
+  <query name="getMetricByName"><![CDATA[from Metric where name=:name]]></query>
+  <query name="getMetricByFrequence"><![CDATA[from Metric where frequence=:frequence]]></query>
+  <query name="getMetricByTypeAndFrequence"><![CDATA[from Metric where type=:type and frequence=:frequence]]></query>
+</hibernate-mapping>

@@ -1,0 +1,58 @@
+pos[POS消费] (id, cid(客户号), amount(消费金额))
+netbank[网银消费] (id, cid(客户号), amount(消费金额))
+customer[客户] (id(客户号), name(姓名), sex(性别)) 
+
+create table customer (id int, name varchar(80), sex varchar(80));
+create table pos (id int, cid int, amount int);
+create table netbank (id int, cid int, amount int);
+
+delete from pos;
+delete from netbank;
+delete from customer;
+
+insert into customer values(1, 'aaa', '男');
+insert into customer values(2, 'bbb', '男');
+insert into customer values(3, 'xxx', '男');
+insert into customer values(4, 'yyy', '男');
+
+insert into pos values(11,1, 100);
+insert into pos values(12,1, 200);
+insert into pos values(13,2, 110);
+insert into pos values(14,2, 150);
+insert into pos values(15,3, 180);
+
+insert into netbank values(21,1, 100);
+insert into netbank values(22,1, 200);
+insert into netbank values(23,3, 110);
+insert into netbank values(24,3, 150);
+insert into netbank values(25,4, 180);
+insert into netbank values(26,4, 580);
+
+select c.id, p.amount, n.amount from customer c, pos p, netbank n where c.id=p.cid and c.id=n.cid;
+
+取 男性，且，消费金额＞100的消费笔数大于1笔 的客户
+实现一：
+select a.* from customer a inner join
+(select customer.id,count(*) as num from customer join  pos on pos.cid=customer.id where pos.amount >100 group by id ) b on a.id=b.id 
+where b.num>=1;
+
+实现二：
+select count(b.id) as total,a.id,a.name,b.cid from customer a, pos b where a.id = b.cid
+and a.sex='男' and b.amount > 100 
+group by a.id,a.name,b.cid
+having total>1;
+
+实现三：
+select a.id, 200 
+from customer a inner join pos b on a.id = b.cid
+where a.sex='男' 
+and (select count(*) from customer a1 inner join pos b1 on a1.id = b1.cid 
+	where b1.amount > 100 and a1.id=a.id) > 1
+group by a.id
+
+实现四：
+select * from (select a1.id , count(*) as num from customer a1 inner join pos b1 on a1.id = b1.cid 
+	where b1.amount > 100 ) as a inner join customer as b on a.cid = b.id where sex ='男' and num >6
+	
+	 
+	

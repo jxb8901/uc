@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE venus PUBLIC 
+		"-//ninecube//venus1.0//EN" 
+		"http://www.ninecube.net/venus/venus.dtd">
+
+<venus>
+	
+	<package name="user" cname="用户管理" >
+		<model entity="user" class="net.ninecube.venus.domain.User">
+			<field name="idno" cname="ID" key="true" />
+			<field name="name" cname="名称" maxlen="20" />
+			<field name="password" cname="密码" len="6" />
+			<field name="creationDate" cname="创建日期" type="date" >${today}</field>
+			<modelfields name="roles" cname="角色" multi="true" model="role" tagtype="checkbox">name</modelfields>
+		</model>
+		<transaction name="query" cname="查询" >
+			<input>
+				<queryfield name="name" op="like" />
+				<queryfield name="creationDate" op="between" />
+			</input>
+		</transaction>
+		<transaction name="read" cname="查看" />
+		<transaction name="create" cname="新建" />
+		<transaction name="update" cname="修改" />
+		<transaction name="delete" cname="删除" />
+	</package>
+	<package name="role" cname="角色管理" >
+		<model entity="role" class="net.ninecube.venus.domain.Role">
+			<field name="idno" cname="ID" key="true" />
+			<field name="name" cname="名称" maxlen="20" />
+			<field name="description" cname="描述" len="80" />
+		</model>
+	</package>
+	
+</venus>
+
+
+

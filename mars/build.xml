@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<project name="mars" basedir=".">
+
+  <!--
+  
+  -->
+
+  <property name="project.name" value="mars"/>
+  <property name="build.dir" value="build"/>
+
+  <property name="etc.dir" value="etc"/>
+  <property name="src.dir" value="src"/>
+  <property name="conf.dir" value="src"/> 
+  <property name="gen.dir" value="doc/database"/>
+  <property name="web.dir" value="web"/>
+  <property name="test.src.dir" value="test"/>
+  <property name="classes.dir" value="${build.dir}/classes"/>
+  <property name="test.classes.dir" value="${build.dir}/test/classes"/>
+
+  <property name="test.report.dir" value="${build.dir}/test/result"/>
+  <property name="lib.dir" value="lib/runtime"/>
+  <property name="lib.compile.dir" value="lib/compile"/>
+  <property name="lib.build.dir" value="lib/build"/>
+  
+  <property file="build.properties"/>
+
+  <path id="project.classes.path">
+    <pathelement location="${classes.dir}"/>
+    <pathelement location="${test.classes.dir}"/>
+    <fileset dir="${lib.build.dir}">
+      <include name="**/*.jar"/>
+    </fileset>
+    <fileset dir="${lib.dir}">
+      <include name="**/*.jar"/>
+    </fileset>
+    <fileset dir="${lib.compile.dir}">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+  <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc"  classpathref="project.classes.path"/>
+
+  <!-- ============================================================================= -->
+  <!-- 初始化                                                                        -->
+  <!-- ============================================================================= -->
+  <target name="init">
+     <tstamp>
+        <format property="TODAY" pattern="yyyy-MM-dd"/>
+     </tstamp>
+  </target>
+
+  <!-- ============================================================================= -->
+  <!-- 准备构建目录                                                                  -->
+  <!-- ============================================================================= -->
+  <target name="prepare" depends="init" description="prepare development project">
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${classes.dir}"/>
+    <mkdir dir="${test.classes.dir}"/>
+    <mkdir dir="${test.src.dir}"/>
+    <mkdir dir="${test.report.dir}"/>
+  </target>
+
+  <!-- ============================================================================= -->
+  <!-- 编译代码                                                                      -->
+  <!-- ============================================================================= -->
+  <target name="compile" depends="prepare" description="compile without generate code">
+    <javac destdir="${classes.dir}" encoding="UTF-8" fork="yes">
+      <src path="${src.dir}"/>
+      <classpath refid="project.classes.path"/>
+    </javac>
+    <antcall target="groovy" />
+    <copy todir="${classes.dir}">
+      <fileset dir="${conf.dir}">
+        <include name="*.*"/>
+      </fileset>
+      <fileset dir="${conf.dir}">
+        <include name="**/*.xml"/>
+      </fileset>
+    </copy>
+    <native2ascii encoding="UTF-8" src="${classes.dir}" dest="${classes.dir}"
+			includes="**/*.properties.txt" ext=""/>
+    <delete>
+      <fileset dir="${classes.dir}">
+        <include name="**/*.properties.txt"/>
+      </fileset>
+    </delete>
+    <echo message="source compiled"/>
+  </target>
+
+  <!-- ============================================================================= -->
+  <!-- 编译Groovy代码                                                                      -->
+  <!-- ============================================================================= -->
+  <target name="groovy" depends="prepare" description="compile groovy script">
+    <groovyc srcdir="${src.dir}" destdir="${classes.dir}" classpathref="project.classes.path" encoding="UTF-8"  />
+    <echo message="groovy compiled"/>
+  </target>
+
+  <!-- ============================================================================= -->
+  <!-- 编译测试代码                                                                  -->
+  <!-- ============================================================================= -->
+  <target name="compile.test" depends="compile" description="compile Java unit test source code">
+    <javac destdir="${test.classes.dir}" debug="${debug}" fork="yes">
+      <src path="${test.src.dir}"/>
+      <classpath refid="project.classes.path"/>
+    </javac>
+    <copy todir="${test.classes.dir}">
+      <fileset dir="${test.src.dir}">
+        <include name="*.*"/>
+      </fileset>
+    </copy>
+    <echo message="unit test source compiled"/>
+  </target>
+
+  <!-- ============================================================================= -->
+  <!-- 打包                                                                          -->
+  <!-- ============================================================================= -->
+  <target name="jar" depends="compile">
+    <jar destfile="${build.dir}/${project.name}.jar" basedir="${classes.dir}" 
+    			manifest="${etc.dir}/META-INF/MANIFEST.MF"/>
+    <jar destfile="${build.dir}/${project.name}-test.jar" basedir="${test.classes.dir}" 
+    			manifest="${etc.dir}/META-INF/MANIFEST.MF"/>
+    <copy todir="${build.dir}/test/conf">
+      <fileset dir="${test.classes.dir}">
+        <include name="log4j.properties"/>
+      </fileset>
+      <fileset dir="${basedir}/../saturn/test">
+        <include name="database.xml"/>
+        <include name="enumer.xml"/>
+      </fileset>
+    </copy>
+  </target>
+  
+
+  <!-- =================================================================== -->
+  <!-- Invoke XDoclet's hibernate                                          -->
+  <!-- =================================================================== -->
+  <target name="hbm.gen" depends="init,compile" description="Generate mapping documents">
+    <antcall target="__hbm.gen">
+      <param name="src.hibernate.dir" value="${src.dir}" />
+    </antcall>
+    
+    <antcall target="__hbm.gen">
+      <param name="src.hibernate.dir" value="${test.src.dir}" />
+    </antcall>
+    
+  </target>
+
+  <target name="__hbm.gen" depends="" >
+    <delete>
+      <fileset dir="${src.hibernate.dir}">
+        <include name="**/*.hbm.xml"/>
+        <containsregexp expression='meta inherit="true" attribute="auto-generated"' />
+      </fileset>
+    </delete>
+
+    <path id="xdoclet2.task.classpath">
+      <fileset dir="${lib.build.dir}/xdoclet2">
+          <include name="*.jar"/>
+        </fileset>
+      <!-- Add the xdoclet2 plugins jar here -->
+      <pathelement location="${lib.build.dir}/xdoclet2-plugins/xdoclet-plugin-hibernate-1.0.3.jar"/>
+      <!-- xdoclet2 runtime dependencies -->
+    </path>
+    
+    <taskdef
+          name="xdoclet2"
+          classname="org.xdoclet.ant.XDocletTask"
+          classpathref="xdoclet2.task.classpath"
+          />
+      <xdoclet2 >
+          <!-- defines the file handled by xdoclet2 -->
+          <fileset dir="${src.hibernate.dir}">
+              <include name="**/*.java"/>
+              <contains text="@hibernate." casesensitive="yes"/>
+          </fileset>
+
+          <!-- defines the processing of a plugin -->
+          <component
+              classname="org.xdoclet.plugin.hibernate.HibernateMappingPlugin"
+              destdir="${src.hibernate.dir}"
+              version="3.0"
+              />
+      </xdoclet2>
+      
+      <replace dir="${src.hibernate.dir}" token="access=&quot;method&quot;" value="access=&quot;property&quot;">
+        <include name="**/*.hbm.xml"/>
+      </replace>
+      
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- generate ddl sql                                                    -->
+  <!-- =================================================================== -->
+  <target name="hbm.ddl" depends="init">
+    <delete>
+      <fileset dir="${gen.dir}">
+        <include name="*.sql"/>
+      </fileset>
+    </delete>
+
+    <taskdef name="schemaexport"
+          classname="org.hibernate.tool.hbm2ddl.SchemaExportTask"
+          classpathref="project.classes.path"/>
+      
+      <schemaexport
+          properties="${basedir}/bin/hibernate.properties"
+      quiet="no"
+      text="yes"
+      drop="no"
+      delimiter=";"
+          output="${gen.dir}/schema-hsqldb.sql">
+          <fileset dir="${src.dir}">
+              <include name="**/*.hbm.xml"/>
+          </fileset>
+          <fileset dir="${test.src.dir}">
+              <include name="**/*.hbm.xml"/>
+          </fileset>
+      </schemaexport>
+    
+    <!-- taskdef name="hibernatetool" 
+            classname="org.hibernate.tool.ant.HibernateToolTask" 
+            classpathref="project.classes.path" />
+      <hibernatetool destdir="${gen.dir}">
+      <configuration configurationfile="hibernate.cfg.xml"/>
+      <configuration propertyfile="${basedir}/bin/hibernate.properties">
+        <fileset dir="${src.dir}">
+          <include name="**/*.hbm.xml"/>
+        </fileset>
+      </configuration>
+      <hbm2ddl export="false" outputfilename="schema-hsqldb.sql"/>
+    </hibernatetool -->
+  </target>
+  
+</project>

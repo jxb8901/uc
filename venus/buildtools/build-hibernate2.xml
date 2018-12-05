@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+
+<project name="hibernate" basedir=".">
+
+<!--
+
+# merge.dir=merge
+# gen.dir=gen
+
+-->
+
+    <!-- =================================================================== -->
+    <!-- Invoke XDoclet's hibernate                                          -->
+    <!-- =================================================================== -->
+    <target name="hbm.gen" depends="init,compile" description="Generate mapping documents">
+		<delete>
+			<fileset dir="${classes.dir}">
+				<include name="**/*.hbm.xml"/>
+			</fileset>
+		</delete>
+		<taskdef
+            name="xdoclet"
+            classname="xdoclet.DocletTask"
+            classpathref="project.classes.path"
+            />
+		<taskdef
+			name="hibernatedoclet"
+            classname="xdoclet.modules.hibernate.HibernateDocletTask"
+            classpathref="project.classes.path"
+		/>
+        <hibernatedoclet
+            destdir="${src.dir}"
+            mergedir="${merge.dir}">
+            <fileset dir="${src.dir}">
+                <include name="**/*.java"/>
+				<contains text="@hibernate.class" casesensitive="yes"/>
+            </fileset>
+            <hibernate version="2.0"/>
+        </hibernatedoclet>
+        <hibernatedoclet
+            destdir="${test.src.dir}"
+            mergedir="${merge.dir}">
+            <fileset dir="${test.src.dir}">
+                <include name="**/*.java"/>
+				<contains text="@hibernate.class" casesensitive="yes"/>
+            </fileset>
+            <hibernate version="2.0"/>
+        </hibernatedoclet>
+    </target>
+
+    <!-- =================================================================== -->
+    <!-- generate ddl sql                                                    -->
+    <!-- =================================================================== -->
+	<target name="hbm.ddl" depends="init,hbm.gen">
+		<delete>
+			<fileset dir="${gen.dir}">
+				<include name="*.sql"/>
+			</fileset>
+		</delete>
+		<taskdef name="schemaexport"
+			classname="net.sf.hibernate.tool.hbm2ddl.SchemaExportTask"
+	     	classpathref="project.classes.path"/>
+		<schemaexport
+			properties="${basedir}/bin/hibernate.properties"
+			quiet="no"
+			text="yes"
+			drop="no"
+			delimiter=";"
+			output="${gen.dir}/schema-hsqldb.sql">
+			<fileset dir="${classes.dir}">
+				<include name="**/*.hbm.xml"/>
+			</fileset>
+		</schemaexport>
+	</target>
+
+    <!-- =================================================================== -->
+    <!-- generate ddl update sql                                             -->
+    <!-- =================================================================== -->
+	<target name="hbm.ddl.update" depends="init,hbm.gen">
+		<delete>
+			<fileset dir="${gen.dir}">
+				<include name="*-update.sql"/>
+			</fileset>
+		</delete>
+		<taskdef name="schemaupdate"
+			classname="net.sf.hibernate.tool.hbm2ddl.SchemaUpdateTask"
+	     	classpathref="project.classes.path"/>
+		<schemaupdate
+			properties="${basedir}/bin/hibernate.properties"
+			quiet="no"
+			text="yes"
+			delimiter=";"
+			output="${gen.dir}/schema-hsqldb-update.sql">
+			<fileset dir="${classes.dir}">
+				<include name="**/*.hbm.xml"/>
+			</fileset>
+		</schemaupdate>
+	</target>
+
+</project>

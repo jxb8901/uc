@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<project name="saturn"  basedir=".">
+
+  <!--
+  
+# build.properties
+
+# 发布目录
+deploy.dir=D:\\programs\\Tomcat5.0\\webapps
+
+svn.dir=E:\\ABCSZ_MERIT\\trunk
+
+  -->
+
+  <property name="project.name" value="saturn"/>
+  <property name="build.dir" value="build"/>
+  <property name="bin.dir" value="bin"/>
+  <property name="javacc.home" value="javacc-4.0"/>
+
+  <property name="etc.dir" value="etc"/>
+  <property name="src.dir" value="src"/>
+  <property name="conf.dir" value="src"/>
+  <property name="test.src.dir" value="test"/>
+  <property name="classes.dir" value="${build.dir}/classes"/>
+  <property name="groovy.classes.dir" value="${build.dir}/groovy"/>
+  <property name="test.classes.dir" value="${build.dir}/test/classes"/>
+
+  <property name="test.report.dir" value="${build.dir}/test/result"/>
+  <property name="lib.dir" value="lib"/>
+  <property name="build.lib.dir" value="lib"/>
+  
+  <property file="build.properties"/>
+
+  <path id="project.classes.path">
+    <pathelement location="${classes.dir}"/>
+    <pathelement location="${test.classes.dir}"/>
+    <fileset dir="${build.lib.dir}">
+      <include name="**/*.jar"/>
+    </fileset>
+    <fileset dir="${lib.dir}">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+  <!-- ============================================================================= -->
+  <!-- 初始化                                                                        -->
+  <!-- ============================================================================= -->
+  <target name="init">
+    <tstamp/>
+    <available classname="java.nio.Buffer" property="websphere.java.compiler"/>
+  </target>
+
+  <!-- ============================================================================= -->
+  <!-- 准备构建目录                                                                  -->
+  <!-- ============================================================================= -->
+  <target name="prepare" depends="init" description="prepare development project">
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${classes.dir}"/>
+    <mkdir dir="${groovy.classes.dir}"/>
+    <mkdir dir="${test.classes.dir}"/>
+    <mkdir dir="${test.src.dir}"/>
+    <mkdir dir="${test.report.dir}"/>
+    <mkdir dir="${test.report.dir}/html" />
+  </target>
+
+  <!-- ============================================================================= -->
+  <!-- 编译代码                                                                      -->
+  <!-- ============================================================================= -->
+  <target name="compile" depends="prepare" description="compile without generate code">
+    <javac destdir="${classes.dir}" encoding="UTF-8" fork="yes">
+      <src path="${src.dir}"/>
+      <classpath refid="project.classes.path"/>
+    </javac>
+    <copy todir="${classes.dir}">
+      <fileset dir="${conf.dir}">
+        <include name="*.*"/>
+      </fileset>
+      <fileset dir="${conf.dir}">
+        <include name="**/*.xml"/>
+        <include name="**/interfaces.*"/>
+      </fileset>
+    </copy>
+    <echo message="source compiled"/>
+  </target>
+
+  <!-- ============================================================================= -->
+  <!-- 编译测试代码                                                                  -->
+  <!-- ============================================================================= -->
+  <target name="compile.test" depends="compile" description="compile Java unit test source code">
+    <javac destdir="${test.classes.dir}" encoding="GB2312" debug="${debug}" fork="yes">
+      <src path="${test.src.dir}"/>
+      <classpath refid="project.classes.path"/>
+    </javac>
+    <copy todir="${test.classes.dir}">
+      <fileset dir="${test.src.dir}">
+        <include name="*.*"/>
+      </fileset>
+    </copy>
+    <echo message="unit test source compiled"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- 测试                                                                -->
+  <!-- =================================================================== -->  
+  <target name="test.report">
+    <junitreport todir="${test.report.dir}">
+      <fileset dir="${test.report.dir}">
+        <include name="TEST-*.xml"/>
+      </fileset>
+      <report format="noframes" todir="${test.report.dir}/html"/>
+    </junitreport>
+  </target>
+
+  <target name="test" depends="init,compile.test">
+    <delete>
+      <fileset dir="${test.report.dir}" includes="**/*.*"/>
+    </delete>
+
+
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath location="${test.src.dir}"/>
+      <classpath refid="project.classes.path"/>
+      <formatter type="xml"/>
+      <batchtest fork="yes" todir="${test.report.dir}">
+        <fileset dir="${test.src.dir}">
+          <include name="**/*Test.java"/>
+          <exclude name="**/AllTests.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+    <antcall target="test.report"/>
+  </target>
+
+  <!-- ============================================================================= -->
+  <!-- 生成语法解析类                                                                -->
+  <!-- ============================================================================= -->
+  <target name="gen" description="Builds parser">
+  	<antcall target="_gen_parser">
+  		<param name="jj.dir" value="${src.dir}/net/ninecube/saturn/ast" />
+  		<param name="jj.name" value="RuleParser" />
+	</antcall>
+  	<antcall target="_gen_parser">
+  		<param name="jj.dir" value="${src.dir}/net/ninecube/formula/parser" />
+  		<param name="jj.name" value="FormulaParser" />
+	</antcall>
+  </target>
+  
+  <target name="_gen_parser" description="Generate parser">
+	<delete>
+      <fileset dir="${jj.dir}" excludes="${jj.name}.org.jj">
+        <containsregexp expression="Generated By:(JJTree|JavaCC|JJTree.?JavaCC): Do not edit this line." />
+      </fileset>
+	</delete> 
+	<native2ascii encoding="UTF-8" src="${jj.dir}" dest="${jj.dir}" includes="*.org.jj" ext=".jjt"/>
+	<move file="${jj.dir}/${jj.name}.org.jjt" tofile="${jj.dir}/${jj.name}.jjt"/>
+  	<replace dir="${jj.dir}" includes="*.jjt" token="\ufeff" value=""/>
+	<jjtree target="${jj.dir}/${jj.name}.jjt" outputdirectory="${jj.dir}" javacchome="${javacc.home}"/>
+	<replace dir="${jj.dir}" includes="*.java" token="\ninecube" value="\\ninecube"/>
+	<replace file="${jj.dir}/${jj.name}.jj" token="\ninecube" value="\\ninecube"/>
+	<replace file="${jj.dir}/JJT${jj.name}State.java" token="class JJT${jj.name}State" value='@SuppressWarnings("unchecked") class JJT${jj.name}State'/>
+	<javacc target="${jj.dir}/${jj.name}.jj" outputdirectory="${jj.dir}" javacchome="${javacc.home}"/>
+    <jjdoc target="${jj.dir}/${jj.name}.jj" outputfile="doc/saturn.html" javacchome="${javacc.home}" />
+    <echo message="gen ${jj.name} ok."/>
+  </target>
+
+  <!-- ============================================================================= -->
+  <!-- 打包                                                                          -->
+  <!-- ============================================================================= -->
+  
+  <target name="jar" depends="compile">
+    <jar destfile="${build.dir}/${project.name}.jar" manifest="${etc.dir}/META-INF/MANIFEST.MF">
+      <fileset dir="${classes.dir}" />
+      <fileset dir="build/groovy" />
+    </jar>
+  </target>
+  
+  <target name="tmp" >
+    <java classname="com.csii.cms.GenerateTestData">
+      <classpath refid="project.classes.path"/>
+    </java>
+  </target>
+  
+</project>

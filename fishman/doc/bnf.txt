@@ -1,0 +1,12 @@
+
+file ：＝  (CONTENT? begin CONTENT? end)* CONTENT?
+
+begin := '<!-- Begin' types property* '-->'
+	
+end := '<!-- End' types '-->'
+
+types := 'Template' | 'Instance'
+
+property := NAME '=' STRING
+
+

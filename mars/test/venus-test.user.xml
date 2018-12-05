@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE venus PUBLIC 
+		"-//ninecube//venus1.0//EN" 
+		"http://www.ninecube.net/venus/venus.dtd">
+
+<venus>
+	
+	<package name="manage" cname="系统管理"  >
+		<package name="user" cname="用户管理"  >
+			<model class="net.ninecube.test.domain.TestUser" entity="testuser">
+				<field name="idno" converter="" cname="ID" type="integer" key="true"/>
+				<field name="userid" converter="" cname="用户ID" type="integer" />
+				<field name="name" converter="" cname="名称" maxlen="20" minlen="6" />
+				<field name="creationDate" cname="描述" type="date" maxlen="255" />
+				<field name="amount" cname="金额" type="amount" maxvalue="99999" minvalue="0"/>
+				<field name="password" cname="密码" maxlen="6" />
+				<field name="password2" cname="确认密码" maxlen="6" />
+				<field name="staticParam" cname="静态参数">120</field>
+				<enumfield name="role" cname="角色" enum="角色" />
+			</model>
+			
+			<transaction name="query" cname="用户查询" >
+				<input>
+					<queryfield name="name" op="like" />
+					<queryfield name="creationDate" op="between" />
+					<queryfield name="password" op="eq" />
+					<queryfield name="amount" op="gt" />
+					<field name="flag" cname="标志">${user.field}</field>
+				</input>
+				<output>
+					<includefields tagtype="text">*</includefields>
+					<mergefield name="idno" tagtype="radio" />
+				</output>
+			</transaction>
+			<transaction name="read" cname="查看" >
+				<input>
+					<includefields>idno</includefields>
+				</input>
+			</transaction>
+			<transaction name="edit" cname="修改用户" >
+				<input>
+				</input>
+				<expressions>
+					<expression name="exp1" errormsg="密码与确认密码不符" depends="Password,Password2">
+						<java>password == password2</java>
+						<javascript>$("Password").value == document.forms[0].Password2.value</javascript>
+					</expression>
+				</expressions>
+			</transaction>
+			<transaction name="add" cname="修改用户" extend="edit" />
+			<transaction name="create" cname="新增用户" >
+				<input>
+					<includefields>*</includefields>
+					<mergefield name="idno" req="true" tagtype="hidden" />
+				</input>
+			</transaction>
+			<transaction name="delete" cname="删除用户" >
+				<input>
+					<includefields>userid</includefields>
+				</input>
+			</transaction>
+			<transaction name="testMerge" cname="测试字段合并用的交易" >
+				<input>
+					<mergefield name="idno" req="true" tagtype="hidden" type="date"/>
+					<mergefield name="userid" />
+				</input>
+			</transaction>
+		</package>
+		
+		<package name="userManage" cname="用户管理" >
+			<transaction name="list" cname="查询" />
+			<transaction name="view" cname="查看" />
+			<transaction name="save" cname="保存" />
+			<transaction name="delete" cname="删除" />
+		</package>
+	</package>
+</venus>
+

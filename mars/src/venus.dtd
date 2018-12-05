@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+1、强制使用一个交易类包括多个action的方式
+2、交易类的类名及位置使用固定的规则映射
+3、Result使用固定的类型，location使用固定的映射方式
+4、interceptor使用默认配置，允许覆盖？
+5、exceptionMapping？
+6、数据验证器配置？
+7、数据类型转换？
+8、交易相关的action要不要强制声明？
+9、支持交易继承?，可选择继承项(处理类、目标JSP、等等)
+		可继承项：transactionClass, resultView, 可针对action进行更细粒度的控制
+		input,output,expression: 如果未声明子元素，可声明是否继承，如果已声明子元素，则使用merge选项继承
+		interceptor的继承:
+10、支持WW的param
+11、可以在这里定义message
+
+12、help支持
+
+13、oneclass模式？：class属性改名为oneclass或其它更有意义的名称
+
+14、查询字段、引用字段、字段包含与排斥
+
+15、模型字段
+
+16、两类交易：
+	A、数据库类交易（CRUD和Query），提供支持：
+		页面数据验证
+		数据类型转换（页面的字符串数据转换为entity对象）
+		页面生成（数据录入页面、查询结果页面）
+		不需要写webwork的action
+	B、报文类交易
+
+17、交易链：
+	暂时未实现交易链，可考虑通过以下方式支持：
+	A、通过配置文件中配置chainresult来实现
+	B、通过检查结果代码是否已特定前缀开始（如：以chain:开头的结果码认为是链接交易）
+
+18、static-params应该比params后执行，以免客户端数据覆盖设置
+
+字段配置信息的用途：
+	公共信息：名称、action
+	用于验证：中文名、数据类型、maxlen,maxvalue,...
+	用于生成查询条件：实际名称、比较操作符
+	用于生成页面：同验证的信息
+
+TODO: 检查包同名！
+
+
+-->
+
+<!ENTITY % NAMES  "
+    name CDATA #REQUIRED
+    cname CDATA #IMPLIED
+">
+
+<!ENTITY % ACTION  "
+    action CDATA #IMPLIED
+">
+
+<!--
+注意：下面的DTD声明中不能使用默认值，否则会影响FieldConfImpl中的merge的形为
+因为根据Dom4j的API无法判断某个属性是用户明确设置的还是通过DTD中的默认值设置的
+-->
+<!ENTITY % FIELDATTR  "
+	%ACTION;
+	converter CDATA #IMPLIED
+	maxlen CDATA #IMPLIED
+	maxvalue CDATA #IMPLIED
+	minlen CDATA #IMPLIED
+	minvalue CDATA #IMPLIED
+	key (true | false) #IMPLIED
+	req (true | false) #IMPLIED
+	len CDATA #IMPLIED
+	type (string | bool | date | amount | integer | url | email | password) #IMPLIED
+	tagtype ( auto | textfield | textarea | hidden | pre | select | radio | checkbox | text | file | img ) #IMPLIED
+	pattern CDATA #IMPLIED
+	jspattern CDATA #IMPLIED
+	patternmsg CDATA #IMPLIED
+">
+ 
+ <!-- document definition -->
+
+<!ELEMENT venus (package | include)*>
+<!ATTLIST venus
+    appname CDATA #IMPLIED
+    appcname CDATA #IMPLIED
+    controllerbasedir CDATA #IMPLIED
+    viewbasedir CDATA #IMPLIED
+>
+
+<!ELEMENT include EMPTY>
+<!ATTLIST include
+    file CDATA #REQUIRED
+>
+
+<!--
+	class: [@deprecated]表示本包中的Transaction共用同一个以包名为名称的类
+				用于实现CRUD操作共用同一个交易类
+-->
+<!ELEMENT package (model | package | transaction)*>
+<!ATTLIST package
+    %NAMES;
+    class (true | false) 'false'
+>
+
+<!--
+	inherit: 可包含all或以下值的组合：class, result, validators
+					注意默认情况下result是不继承的
+	type: 交易类型，query表示查询交易，目前对此类交易有特别支持
+			查询交易的input元素中只能出现查询字段queryfield
+-->
+<!ELEMENT transaction (param*, input?, output?, expressions?)>
+<!ATTLIST transaction
+    %NAMES;
+    extend CDATA #IMPLIED
+    inherit CDATA "  class,  validator  "
+    abstract CDATA #IMPLIED
+    interceptors CDATA #IMPLIED
+	type ( query | view | create | update | delete | reflect | xwork ) #IMPLIED
+>
+
+<!ELEMENT param (#PCDATA)>
+<!ATTLIST param
+	%NAMES;
+	value CDATA #IMPLIED
+>
+
+<!--
+	entity: 指示相应的实体类名称，目前填写实体类的类名，
+		该名称一般与hibernate的hbm文件中的名称一致
+		对于查询类交易，该属性必填
+-->
+<!ELEMENT model ( field | modelfields | enumfield)+ >
+<!ATTLIST model
+    entity CDATA #IMPLIED
+    class CDATA #IMPLIED
+>
+<!ELEMENT input ( field | mergefield | includefields | excludefields | queryfield | modelfields )* >
+<!ELEMENT output ( field | mergefield | includefields | excludefields )* >
+
+<!--
+	元素内容为需要引入的字段名，字段间用逗号隔开
+-->
+<!ELEMENT modelfields (#PCDATA)>
+<!ATTLIST modelfields
+	%NAMES;
+	model CDATA #REQUIRED
+	multi (true | false) 'false'
+	%FIELDATTR;
+>
+<!ELEMENT enumfield (#PCDATA)>
+<!ATTLIST enumfield
+	%NAMES;
+	enum CDATA #IMPLIED
+	multi (true | false) 'false'
+	elementtype CDATA #IMPLIED
+	%FIELDATTR;
+>
+<!--
+	元素内容为需要包含的字段名，字段间用逗号隔开
+-->
+<!ELEMENT includefields (#PCDATA)>
+<!ATTLIST includefields
+	%FIELDATTR;
+>
+<!--
+	元素内容为不包含的字段名，字段间用逗号隔开
+-->
+<!ELEMENT excludefields (#PCDATA)>
+<!ATTLIST excludefields
+	%FIELDATTR;
+>
+<!ELEMENT mergefield (#PCDATA)>
+<!ATTLIST mergefield
+	%NAMES;
+	%FIELDATTR;
+>
+
+<!--
+	op: 查询时的比较运算符
+-->
+<!ELEMENT queryfield (#PCDATA)>
+<!ATTLIST queryfield
+	%NAMES;
+	op ( eq | ne | gt | ge | lt | le | like | between ) #REQUIRED
+	%FIELDATTR;
+>
+
+<!--
+
+	action：控制检验所应用的动作，可用如下格式取值：
+			"" - 不填或为空，表示检验应用于除默认动作以外的所有动作
+			"any" - 表示检验应用于所有动作
+			action ("," action)* - action为动作名，表示检验应用于所列出的动作
+			
+	TODO: password类型的验证器需要订制
+-->
+<!ELEMENT field (#PCDATA)>
+<!ATTLIST field
+	%NAMES;
+	%FIELDATTR;
+>
+
+<!ELEMENT expressions (expression+)>
+<!ATTLIST expressions
+	%ACTION;
+>
+
+<!--
+	TODO: depends未实现
+-->
+<!ELEMENT expression (java?, javascript?)>
+<!ATTLIST expression
+	%NAMES;
+	fieldname CDATA #IMPLIED
+	action CDATA #IMPLIED
+	depends CDATA #IMPLIED
+	errormsg CDATA #REQUIRED
+>
+<!ELEMENT java (#PCDATA)>
+<!ELEMENT javascript (#PCDATA)>
+

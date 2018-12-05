@@ -1,0 +1,73 @@
+<html>
+<head>
+<style type="text/css">a.test { font-weight: bold; }</style>
+<script type="text/javascript" src="jquery-latest.js"></script>
+<script type="text/javascript" >
+
+function doSelect() {
+	window["test"+"1"]();
+}
+
+function test1() {
+	alert("test1");
+}
+
+function test2() {
+	alert("test2");
+}
+
+function getCheckRadio(name) {
+	var val = $("input[@name="+name+"][@type=radio][@checked]").val(); 
+	alert(val);
+	if (val) alert('true'); else alert('false');
+}
+</script>
+</head>
+<body>
+
+<a href="#">jQuery</a>
+
+<form>
+<select id="selectid" name="sss">
+	<option value="">------</option>
+	<option value="1">name1</option>
+	<option value="2">name2</option>
+</select>
+</form>
+
+<form>
+<table class="listcontent">
+	<thead>
+		<tr>
+			<td fieldname="idno">ID</td>
+			<td fieldname="name">NAME</td>
+			<td fieldname="value">VALUE</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td fieldvalue="1"><input type="radio" name="idno" value="1" q_name="name1" q_value="value1" /></td>
+			<td fieldvalue="name1">name1</td>
+			<td fieldvalue="value1">value1</td>
+		</tr>
+		<tr>
+			<td fieldvalue="2"><input type="radio" name="idno" value="2" q_name="name2" q_value="value2" /></td>
+			<td fieldvalue="name2">name2</td>
+			<td fieldvalue="value2">value2</td>
+		</tr>
+		<tr>
+			<td fieldvalue="3"><input type="radio" name="idno" value="3" q_name="name3" q_value="value3" /></td>
+			<td fieldvalue="name3">name3</td>
+			<td fieldvalue="value3">value3</td>
+		</tr>
+	</tbody>
+</table>
+<select id="selectid" name="sss.a">
+	<option value="">------</option>
+	<option value="1">name1</option>
+	<option value="2">name2</option>
+</select>
+<input type="button" value="select" onclick="getCheckRadio('idno'); return false; " />
+</form>
+</body>
+</html>

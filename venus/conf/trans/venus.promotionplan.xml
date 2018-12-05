@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE venus PUBLIC 
+		"-//ninecube//venus1.0//EN" 
+		"http://www.ninecube.net/venus/venus.dtd">
+
+<venus>
+	
+	<package name="promotionplan" cname="营销计划管理" >
+		<model entity="promotionplan" class="net.ninecube.venus.domain.PromotionPlan">
+			<field name="idno" cname="ID" key="true" />
+			<field name="name" cname="名称" req="true" maxlen="20" />
+			<field name="description" cname="描述" maxlen="255" />
+			<modelfields name="target" cname="客户群" model="customergroup" req="true">name</modelfields>
+			<modelfields name="rule" cname="营销规则" model="ruleentity" req="true">name</modelfields>
+			<field name="ruleParams" cname="营销规则参数" tagtype="pre"/>
+			<modelfields name="evaluation" cname="评价体系" model="evaluation" req="true">name</modelfields>
+			<!-- field name="status" cname="状态" maxlen="255" / -->
+			<field name="creationDate" cname="创建日期" type="date" >${today}</field>
+			<field name="startDate" cname="启用日期" type="date" />
+			<field name="endDate" cname="结束日期" type="date" />
+			<field name="creator" cname="创建人" >${user.name}</field>
+		</model>
+		<transaction name="query" cname="查询" >
+			<input>
+				<queryfield name="name" op="like" />
+				<queryfield name="creationDate" op="between" />
+				<queryfield name="creator" op="eq" />
+			</input>
+			<output>
+				<field name="idno" tagtype="radio" cname="ID" />
+				<excludefields tagtype="text">ruleParams</excludefields>
+			</output>
+		</transaction>
+		<transaction name="read" cname="查看" >
+		</transaction>
+		<transaction name="create" cname="新建" >
+		</transaction>
+		<transaction name="update" cname="修改" >
+		</transaction>
+		<transaction name="delete" cname="删除" >
+		</transaction>
+		
+		<transaction name="eval" cname="评价" >
+			<input>
+				<modelfields name="promotionPlan" cname="营销计划" model="promotionplan">name</modelfields>
+				<modelfields name="evaluation" cname="评价体系" model="evaluation">name</modelfields>
+				<modelfields name="referGroup" cname="参照营销计划" model="promotionplan">name</modelfields>
+				<field name="referDate" cname="基期" type="date" ></field>
+			</input>
+		</transaction>
+	</package>
+	
+</venus>
+
+
+

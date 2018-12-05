@@ -1,0 +1,13 @@
+
+支持静态修饰和动态修饰两种模式
+	静态：通过命令行命令合并要修饰的页面
+	动态：通过filter实现
+
+类似Dreamwaver的模板机制
+
+
+模板页面标记：
+	<!-- TemplateBegin name="content" --><!-- TemplateEnd -->
+	
+实例页面标记：
+	<!-- InstanceBegin name="content" --><!-- InstanceEnd -->

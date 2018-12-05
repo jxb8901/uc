@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE venus PUBLIC 
+		"-//ninecube//venus1.0//EN" 
+		"http://www.ninecube.net/venus/venus.dtd">
+
+<venus>
+	
+	<package name="evaluation" cname="评价体系管理" >
+		<model entity="evaluation" class="net.ninecube.venus.domain.Evaluation">
+			<field name="idno" cname="ID" key="true" />
+			<field name="name" cname="名称" req="true" maxlen="20" />
+			<modelfields name="metrics" cname="指标" model="metric" multi="true">name, frequence</modelfields>
+			<field name="description" cname="描述" maxlen="255" />
+			<field name="creationDate" cname="创建日期" type="date" >${today}</field>
+			<field name="creator" cname="创建人" >${user.name}</field>
+		</model>
+		<transaction name="query" cname="查询" >
+			<input>
+				<queryfield name="name" op="like" />
+				<queryfield name="creationDate" op="between" />
+				<queryfield name="creator" op="eq" />
+			</input>
+			<output>
+				<field name="idno" tagtype="radio" cname="ID" />
+				<excludefields tagtype="text">metrics</excludefields>
+			</output>
+		</transaction>
+		<transaction name="read" cname="查看" />
+		<transaction name="create" cname="新建" />
+		<transaction name="update" cname="修改" />
+		<transaction name="delete" cname="删除" />
+	</package>
+	
+</venus>
+
+
+

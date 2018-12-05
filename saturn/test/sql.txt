@@ -1,0 +1,81 @@
+drop table  if exists  knc_cust;
+CREATE TABLE knc_cust (
+custid int, 
+custno varchar(255), 
+brchno varchar(255), 
+custna varchar(255), 
+namexx varchar(255), 
+borndt date, 
+mobitl varchar(255), 
+sextp varchar(255)
+);
+drop table  if exists  kns_tran;
+CREATE TABLE kns_tran (
+transq varchar(255), 
+custno varchar(255), 
+trandt date, 
+tranti datetime, 
+acctno varchar(255), 
+tranam decimal, 
+trantp varchar(255), 
+trancy varchar(255), 
+transt varchar(255)
+);
+
+
+
+drop table  if exists  POINTCAL;
+CREATE TABLE POINTCAL(
+	ID int AUTO_INCREMENT KEY,
+	CUSTOMERID varchar(30),
+	TRANSTYPE varchar(50),--可用来存放交易表的名字
+	TRANSID varchar(30), 
+	POINTTYPE char(100),
+	POINT decimal(16,2),
+	TRANSTIME datetime,
+	MARK int --defualt 0
+);
+
+drop table  if exists  POINTJOURNAL;
+CREATE TABLE POINTJOURNAL(
+	ID int AUTO_INCREMENT KEY,
+	CUSTOMERID varchar(30),
+	TRANSTYPE varchar(50),--可用来存放交易表的名字
+	TRANSID varchar(30), 
+	POINTTYPE char(100),
+	POINT decimal(16,2),
+	TRANSTIME datetime,
+	date TIMESTAMP default CURRENT_TIMESTAMP() --日志记录时间
+
+);
+
+drop table  if exists  POINTACCOUNT;
+CREATE TABLE POINTACCOUNT(
+	CUSTOMERID varchar(30),
+	POSPOINT decimal(16,2) 		
+
+)
+
+
+insert into CUSTOMER (ID, NAME, SEX ) values(1, "fan", "男");
+insert into CUSTOMER (ID, NAME, SEX ) values(2, "lin", "女");
+insert into CUSTOMER (ID, NAME, SEX ) values(3, "jiang", "男");
+insert into CUSTOMER (ID, NAME, SEX ) values(4, "song", "男");
+insert into CUSTOMER (ID, NAME, SEX ) values(5, "wang", "女");
+
+
+insert into POINTACCOUNT values(1,0);
+insert into POINTACCOUNT values(2,0);
+insert into POINTACCOUNT values(3,0);
+insert into POINTACCOUNT values(4,0);
+insert into POINTACCOUNT values(5,0);
+
+
+
+--insert into POS (ID, CUSTOMERID, TRANDATE, TRANMONTH, AMOUNT) values(3, 1, '2006-12-24', 12, 600);
+--insert into POS (ID, CUSTOMERID, TRANDATE, TRANMONTH, AMOUNT) values(4, 2, '2006-12-24', 12, 600);
+
+
+
+
+

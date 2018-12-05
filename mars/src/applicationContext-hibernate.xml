@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<!-- Local DataSource that works in any environment -->
+	<!-- Note that DriverManagerDataSource does not pool; it is not intended for production -->
+	<!-- See JPetStore for an example of using Commons DBCP BasicDataSource as alternative -->
+	<!-- See Image Database for an example of using C3P0 ComboPooledDataSource as alternative -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${jdbc.driver}"/>
+		<property name="url" value="${jdbc.url}"/>
+		<property name="username" value="${jdbc.username}"/>
+		<property name="password" value="${jdbc.password}"/>
+	</bean>
+
+	<!-- Hibernate SessionFactory -->
+	<bean id="lobHandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler" /> 
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="mappingLocations">
+			<list>
+				<value>classpath*:/net/ninecube/**/*.hbm.xml</value>
+			</list>
+		</property>
+		<!-- 
+		<property name="mappingDirectoryLocations">
+			<list>
+				<value>${hibernate.mapping.classpath.dir}</value>
+			</list>
+		</property>
+		<property name="mappingJarLocations">
+			<list>
+				<value>${hibernate.mapping.classpath.jar}</value>
+			</list>
+		</property>
+		-->
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.generate_statistics">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+			</props>
+		</property>
+		<property name="lobHandler">  
+			<ref bean="lobHandler" />  
+		</property>
+		<property name="eventListeners">
+			<map>
+				<entry key="merge">
+					<bean class="org.springframework.orm.hibernate3.support.IdTransferringMergeEventListener"/>
+				</entry>
+				<entry key="post-load">
+					<!-- This hibernate interceptor allows us to use Spring to inject services into Hibernate managed domain objects -->   
+					<bean class="net.ninecube.core.util.SpringHibernateInjector">
+						<property name="deniedPackagePrefix">
+							<list><value>net.ninecube.reports</value></list>						
+						</property>
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<!-- Transaction manager for a single Hibernate SessionFactory (alternative to JTA) -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+	<bean id="serviceLocator" class="net.ninecube.core.context.ServiceLocator"  init-method="init">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<bean id="queryManager" class="net.ninecube.core.query.hibernate.HibernateQueryManager">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+	<bean id="entityManagerFactory" class="net.ninecube.core.domain.EntityManagerFactory" init-method="init" >
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+</beans>

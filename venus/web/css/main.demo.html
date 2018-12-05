@@ -1,0 +1,222 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Untitled Document</title>
+<link href="main.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+<!--
+
+-->
+</style>
+</head>
+<body >
+
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td colspan="4" height="100%" valign="top" class="container1">
+      <form name="form1" method="post" action="/Project_Enterprise/main">
+      	  <div class="heading">增加用户 -- 录入表单的CSS样式</div>
+          <div id="error_msg" class="error">录入页面错误信息</div>
+          <table class="inputcontent" border="0" cellpadding="0" cellspacing="0">
+            <tr>
+              <td class="tdLabel">登录名</td>
+              <td><input type="text" name="LoginId" value='1000' readonly />
+              </td>
+            </tr>
+            <tr>
+              <td class="tdLabel">姓名</td>
+              <td><input name="name" type="text" maxlength="20" value='陈治宇' />
+              </td>
+            </tr>
+            <tr>
+              <td class="tdLabel">用户部门</td>
+              <td><input name="dept"  type="text" size="20" maxlength="20" value=''></td>
+            </tr>
+            <tr>
+              <td class="tdLabel">是否接收讯息</td>
+              <td><input type="checkbox" id="receiveMsg_id" name="receiveMsg" value="true" a='' >
+                <label for="receiveMsg_id">是，要接收讯息</label></td>
+            </tr>
+            <tr>
+              <td class="tdLabel">讯息接收方式</td>
+              <td><ul >
+                  <li>
+                    <input type='checkbox' name='msgType' id='msgType0' value='mobile'>
+                    <label for='msgType0'>手机</label>
+                  </li>
+                  <li>
+                    <input type='checkbox' name='msgType' id='msgType1' value='page'>
+                    <label for='msgType1'>网页</label>
+                  </li>
+                  <li>
+                    <input type='checkbox' name='msgType' id='msgType2' value='email' dataType="Group" min="1" max="3">
+                    <label for='msgType2'>E-Mail</label>
+                  </li>
+                </ul></td>
+            </tr>
+            <tr>
+              <td class="tdLabel">E-Mail</td>
+              <td><input type="text" name="email" value='' /></td>
+            </tr>
+            <tr>
+              <td class="tdLabel">手机</td>
+              <td><input type="text" name="mobile"  value='' /></td>
+            </tr>
+            <tr>
+              <td class="tdLabel">证书号</td>
+              <td><input type="text" name="certNo" size="30" maxlength="30">
+              </td>
+            </tr>
+            <tr>
+              <td class="tdLabel">是否锁定</td>
+              <td><input type="checkbox" id="locked_id" name="locked" value="true" a='' />
+                <label for="locked_id">锁定</label>
+              </td>
+            </tr>
+          </table>
+        <div class="buttons">
+          <input type='hidden' name='transName' value='UserUpdate' />
+          <input type='hidden' name='do' value='operate' />
+          <input type="submit" value="修改">
+          <input type="button" value="放弃" onclick="location.href='/Project_Enterprise/main?transName=UserList'">
+        </div>
+      </form>
+	  </td>
+	</tr><tr>
+	  <td valign="bottom" class="container2">
+            <div class="remark"><div class="remark_title">备注：</div>
+            <ul>
+              <li>选中相关账号，显示该账号当前余额信息。</li>
+              <li>选中相关账号，显示该账号当前余额信息。</li>
+            </ul>
+            </div>
+	  </td>
+  </tr>
+  <tr>
+    <td colspan="4" height="50" align="center" style="font-size:10px">&copy; All RIGHTS RESERVED. 版权所有 2005　 ADD:香港路43号　电话:123456 <br>
+      TEL:86-0731-8296188 　FAX:86-0731-8232036 </td>
+  </tr>
+</table>
+<br />
+
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td colspan="4" height="100%" valign="top" class="container1">
+      <form name="form1" method="post" action="/Project_Enterprise/main">
+      <div class="heading">用户列表 -- 查询结果列表的CSS样式</div>
+        <div class="error">录入页面错误信息</div>
+        <table class="listcontent" border="0" cellpadding="0" cellspacing="0">
+          <thead>
+            <tr>
+              <td>选择<input type="radio" name="LoginId" style="display:none"/></td>
+              <td>登录名</td>
+              <td>姓名</td>
+              <td>类型</td>
+              <td>授权类型</td>
+              <td>授权状态</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="odd">
+              <td><input type="radio" name="LoginId" manager='true' authStatus='' value='1000' ></td>
+              <td><a href="#">1000</a></td>
+              <td>陈治宇</td>
+              <td><span name='type' >管理员</span></td>
+              <td><span name='authLevel' ></span></td>
+              <td><span name='authStatus' >正常</span> </td>
+            </tr>
+            <tr class="even">
+              <td><input type="radio" name="LoginId" manager='true' authStatus='' value='1001' ></td>
+              <td><a href="#">1001</a></td>
+              <td>管理员</td>
+              <td><span name='type' >管理员</span></td>
+              <td><span name='authLevel' ></span></td>
+              <td><span name='authStatus' >正常</span> </td>
+            </tr>
+            <tr class="odd">
+              <td><input type="radio" name="LoginId" manager='false' authStatus='' value='1002' ></td>
+              <td><a href="#">1002</a></td>
+              <td>万林波</td>
+              <td><span name='type' >操作员</span></td>
+              <td><span name='authLevel' >A</span></td>
+              <td><span name='authStatus' >正常</span> </td>
+            </tr>
+          </tbody>
+        </table>
+		<div class="pager" align="right">
+	        共1/4页
+			[<a href="2" onclick="doPage('2');return false;">下一页</a>]
+			[<a href="4" onclick="doPage('4');return false;">尾页</a>]
+		</div>
+      <div class="buttons">
+        <input type="hidden" name="transName" value="UserList">
+        <input type="hidden" name="do" value="">
+        <input type="hidden" name="currentPage" value="">
+        <ebank:access transName="UserAdd">
+        <input type="button" value="添加" class="button" onclick="location.href='$';return false;">
+        </ebank:access><ebank:access transName="UserUpdate">
+        <input type="submit" value="修改信息" class="button" onclick="if (checkStatus()) {this.form.transName.value='UserUpdate';return true;} return false;">
+        </ebank:access><ebank:access transName="UserRight">
+        <input type="submit" value="修改权限" class="button" onclick="if (checkStatus()) {this.form.transName.value='UserRight';return true;} return false;">
+        </ebank:access><ebank:access transName="UserDelete">
+        <input type="submit" value="删除" class="button" onclick="return checkDelete();">
+        </ebank:access>
+        <input type="submit" value="查看信息" class="button" onclick="if (checkRadio(document.forms[0],'LoginId')) {this.form.transName.value='UserView';return true;} return false;">
+        <input type="submit" value="查看权限" class="button" onclick="if (checkRadio(document.forms[0],'LoginId')) {this.form.transName.value='UserViewRight';return true;} return false;">
+      </div>
+      </form>
+	  </td>
+	</tr><tr>
+	  <td valign="bottom" class="container2">
+              <div class="remark"><div class="remark_title">备注：</div>
+              <!-- InstanceBeginEditable name="remark" -->
+            <ul>
+              <li>选中相关账号，显示该账号当前余额信息。</li>
+              <li>选中相关账号，显示该账号当前余额信息。</li>
+            </ul><!-- InstanceEndEditable --></div> 
+		</td>
+  </tr>
+  <tr>
+    <td colspan="4" height="50" align="center" style="font-size:10px">&copy; All RIGHTS RESERVED. 版权所有 2005　 ADD:香港路43号　电话:123456 <br>
+      TEL:86-0731-8296188 　FAX:86-0731-8232036 </td>
+  </tr>
+</table>
+<br />
+
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td colspan="4" height="100%" valign="top" class="container1">
+      <form name="form1" method="post" action="/Project_Enterprise/main">
+      <div class="heading" style="display:none"></div>
+      <div class="content">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><td><ul class="fatal_error"><li>错误提示信息</li></ul></td></tr>
+        </table>
+      </div>
+      <div class="buttons">
+        <input type="button" value="返回" class="button" >
+        <input type="button" value="取消" class="button" >
+      </div>
+      </form>
+	  </td>
+	</tr><tr>
+	  <td valign="bottom" class="container2">
+              <div class="remark" style="display:none"><div class="remark_title">备注：</div>
+              <!-- InstanceBeginEditable name="remark" -->
+            <ul>
+              <li>选中相关账号，显示该账号当前余额信息。</li>
+              <li>选中相关账号，显示该账号当前余额信息。</li>
+            </ul><!-- InstanceEndEditable --></div> 
+			</td>
+  </tr>
+  <tr>
+    <td colspan="4" height="50" align="center" style="font-size:10px">&copy; All RIGHTS RESERVED. 版权所有 2005　 ADD:香港路43号　电话:123456 <br>
+      TEL:86-0731-8296188 　FAX:86-0731-8232036 </td>
+  </tr>
+</table>
+<br />
+
+</body>
+</html>

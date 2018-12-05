@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE venus PUBLIC 
+		"-//ninecube//venus1.0//EN" 
+		"http://www.ninecube.net/venus/venus.dtd">
+
+<venus>
+	
+	<package name="customer" cname="客户信息查询" >
+		<model entity="customer" class="net.ninecube.venus.domain.Customer">
+			<field name="customerNo" cname="客户号" key="true" />
+			<field name="name" cname="名称" />
+			<field name="address" cname="地址" />
+		</model>
+		<transaction name="query" cname="查询" >
+			<input>
+				<queryfield name="customerNo" op="eq" />
+				<queryfield name="name" op="like" />
+			</input>
+		</transaction>
+	</package>
+	
+	<package name="pointtype" cname="积分类型管理" >
+		<model entity="pointtype" class="net.ninecube.venus.domain.PointType">
+			<field name="idno" cname="ID" key="true" />
+			<field name="name" cname="名称" maxlen="80" />
+			<field name="description" cname="描述" maxlen="255" />
+		</model>
+		<transaction name="query" cname="查询">
+			<input>
+				<queryfield name="name" op="like" />
+			</input>
+		</transaction>
+		<transaction name="read" cname="查看" />
+		<transaction name="create" cname="新建" />
+		<transaction name="update" cname="修改" >
+			<input>
+				<includefields>*</includefields>
+				<mergefield name="idno" tagtype="hidden" />
+				<mergefield name="name" tagtype="text" />
+			</input>
+		</transaction>
+		<transaction name="delete" cname="删除" />
+	</package>
+	
+</venus>
+
+
+

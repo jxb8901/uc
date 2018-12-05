@@ -1,0 +1,24 @@
+
+~~~ =Input ~~~
+Rule=rule.13.txt
+Filter=
+TargetDate=D20070323
+
+~~~ SetupSql ~~~
+insert into MetricValue(F_Frequence,F_Date,F_TargetType,F_TargetId,F_TargetDataID,F_DimensionType,F_Dimension,F_MetricId,F_QuotaValue) 
+values('D','2007-03-23','Customer','1','1000000001','*','*',1,5);
+insert into MetricValue(F_Frequence,F_Date,F_TargetType,F_TargetId,F_TargetDataID,F_DimensionType,F_Dimension,F_MetricId,F_QuotaValue) 
+values('D','2007-03-23','Customer','1','1000000001','交易.交易类型','POS',2,6); 
+
+~~~ Result ~~~
+POINTACCOUNT
+*CUSTOMERID	*POINTTYPE	POINT	
+1000000001	POS积分   0	
+1000000001	网银积分    0	
+1000000001	消费积分    25	
+1000000002	POS积分   0	
+1000000002	网银积分    0	
+1000000002	消费积分    0	
+1000000003	POS积分   0	
+1000000003	网银积分    0	
+1000000003	消费积分    10

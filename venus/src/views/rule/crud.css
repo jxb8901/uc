@@ -1,0 +1,7 @@
+
+table.inputcontent td {
+	width: 85%;
+}
+table.inputcontent td.tdLabel {
+	width: 15%;
+}

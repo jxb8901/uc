@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE venus PUBLIC 
+		"-//ninecube//venus1.0//EN" 
+		"http://www.ninecube.net/venus/venus.dtd">
+
+<venus>
+	
+	<package name="metric" cname="指标管理" >
+		<model entity="metric" class="net.ninecube.venus.domain.Metric">
+			<field name="idno" cname="ID" key="true" />
+			<field name="name" cname="名称" req="true" maxlen="20" />
+			<field name="formula" cname="公式" maxlen="255" />
+			<field name="description" cname="描述" maxlen="255" />
+			<enumfield name="type" cname="计算对象类型" enum="metric.type"/>
+			<enumfield name="frequence" cname="频度" enum="frequence" />
+			<field name="unit" cname="单位" maxlen="255" />
+			<field name="ratio" cname="换算系数" maxlen="255" />
+		</model>
+		<transaction name="query" cname="查询" >
+			<input>
+				<queryfield name="name" op="like" />
+				<queryfield name="frequence" op="eq" />
+			</input>
+		</transaction>
+		<transaction name="read" cname="查看" />
+		<transaction name="create" cname="新建" />
+		<transaction name="update" cname="修改" />
+		<transaction name="delete" cname="删除" />
+	</package>
+	
+</venus>
+
+
+

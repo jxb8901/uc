@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+
+<project name="hibernate" basedir=".">
+
+	<!--
+
+# merge.dir=merge
+# gen.dir=gen
+
+-->
+
+	<!-- =================================================================== -->
+	<!-- Invoke XDoclet's hibernate                                          -->
+	<!-- =================================================================== -->
+	<target name="hbm.gen" depends="" description="Generate mapping documents">
+		<delete>
+			<fileset dir="${classes.dir}">
+				<include name="**/*.hbm.xml" />
+			</fileset>
+		</delete>
+
+		<condition property="hibernate.classes.exist">
+			<resourcecount when="greater" count="0">
+				<fileset dir="${src.dir}">
+					<include name="**/*.java" />
+					<contains text="@hibernate." casesensitive="yes" />
+				</fileset>
+			</resourcecount>
+		</condition>
+		<antcall target="__hbm.gen">
+			<param name="src.hibernate.dir" value="${src.dir}" />
+		</antcall>
+
+		<condition property="hibernate.classes.exist">
+			<resourcecount when="greater" count="0">
+				<fileset dir="${test.src.dir}">
+					<include name="**/*.java" />
+					<contains text="@hibernate." casesensitive="yes" />
+				</fileset>
+			</resourcecount>
+		</condition>
+		<antcall target="__hbm.gen">
+			<param name="src.hibernate.dir" value="${test.src.dir}" />
+		</antcall>
+
+		<copy todir="${classes.dir}">
+			<fileset dir="${src.dir}">
+				<include name="**/*.hbm.xml" />
+			</fileset>
+		</copy>
+
+	</target>
+
+	<target name="__hbm.gen" depends="" if="hibernate.classes.exist">
+		<delete>
+			<fileset dir="${src.hibernate.dir}">
+				<include name="**/*.hbm.xml" />
+				<containsregexp expression='meta inherit="true" attribute="auto-generated"' />
+			</fileset>
+		</delete>
+
+		<path id="xdoclet2.task.classpath">
+			<fileset dir="${build.lib.dir}/xdoclet2">
+				<include name="*.jar" />
+			</fileset>
+			<!-- Add the xdoclet2 plugins jar here -->
+			<pathelement location="${build.lib.dir}/xdoclet2-plugins/xdoclet-plugin-hibernate-1.0.3.jar" />
+			<!-- xdoclet2 runtime dependencies -->
+		</path>
+
+		<taskdef name="xdoclet2" classname="org.xdoclet.ant.XDocletTask" classpathref="xdoclet2.task.classpath" />
+		<xdoclet2>
+			<!-- defines the file handled by xdoclet2 -->
+			<fileset dir="${src.hibernate.dir}">
+				<include name="**/*.java" />
+				<contains text="@hibernate." casesensitive="yes" />
+			</fileset>
+
+			<!-- defines the processing of a plugin -->
+			<component classname="org.xdoclet.plugin.hibernate.HibernateMappingPlugin" destdir="${src.hibernate.dir}" version="3.0" />
+		</xdoclet2>
+
+		<replace dir="${src.hibernate.dir}" token="access=&quot;method&quot;" value="access=&quot;property&quot;">
+			<include name="**/*.hbm.xml" />
+		</replace>
+
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- generate ddl sql                                                    -->
+	<!-- =================================================================== -->
+	<target name="hbm.ddl" depends="">
+		<delete>
+			<fileset dir="${gen.dir}">
+				<include name="*.sql" />
+			</fileset>
+		</delete>
+
+		<taskdef name="schemaexport" classname="org.hibernate.tool.hbm2ddl.SchemaExportTask" classpathref="project.classes.path" />
+
+		<schemaexport properties="${basedir}/bin/hibernate.properties" quiet="no" text="yes" drop="no" delimiter=";" output="${gen.dir}/schema-hsqldb.sql">
+			<fileset dir="${src.dir}">
+				<include name="**/*.hbm.xml" />
+			</fileset>
+			<fileset dir="${test.src.dir}">
+				<include name="**/*.hbm.xml" />
+			</fileset>
+		</schemaexport>
+	</target>
+
+</project>

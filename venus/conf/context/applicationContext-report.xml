@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+		default-autowire="byName">
+
+	<import resource="classpath:org/codehaus/xfire/spring/xfire.xml" />
+	
+	<bean id="reportDefinitionManager" class="net.ninecube.core.domain.GenericEntityManager">
+		<constructor-arg ref="sessionFactory"/>
+		<constructor-arg value="net.ninecube.reports.objects.Report" />
+	</bean>
+	<bean id="reportChartDefinitionManager" class="net.ninecube.core.domain.GenericEntityManager">
+		<constructor-arg ref="sessionFactory"/>
+		<constructor-arg value="net.ninecube.reports.objects.ReportChart" />
+	</bean>
+	<bean id="reportParameterManager" class="net.ninecube.core.domain.GenericEntityManager">
+		<constructor-arg ref="sessionFactory"/>
+		<constructor-arg value="net.ninecube.reports.objects.ReportParameter" />
+	</bean>
+	
+
+	<bean id="_ORComponentManager_" class="net.ninecube.reports.util.ORComponentManager" />
+
+	<bean id="hibernateProvider"
+		class="net.ninecube.reports.providers.HibernateProvider" />
+
+	<bean id="propertiesProvider"
+		class="net.ninecube.reports.providers.impl.PropertiesProviderImpl" />
+
+	<bean id="directoryProvider"
+		class="net.ninecube.reports.providers.DirectoryProvider"
+		init-method="init">
+		<constructor-arg>
+			<ref bean="propertiesProvider" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="dateProvider"
+		class="net.ninecube.reports.providers.DateProvider">
+		<constructor-arg>
+			<ref bean="propertiesProvider" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="dataSourceProvider"
+		class="net.ninecube.reports.providers.impl.SpringDataSourceProviderImpl"
+		>
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="groupProvider"
+		class="net.ninecube.reports.providers.impl.GroupProviderImpl"
+		/>
+
+	<bean id="parameterProvider"
+		class="net.ninecube.reports.providers.impl.ParameterProviderImpl"
+		>
+		<constructor-arg>
+			<ref bean="dataSourceProvider" />
+		</constructor-arg>
+		<constructor-arg>
+			<ref bean="dateProvider" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="reportLogProvider"
+		class="net.ninecube.reports.providers.impl.ReportLogProviderImpl"
+		 />
+
+	<bean id="reportProvider"
+		class="net.ninecube.reports.providers.impl.ReportProviderImpl"
+		>
+		<constructor-arg>
+			<ref bean="directoryProvider" />
+		</constructor-arg>
+	</bean>
+	
+	<bean id="userProvider"
+		class="net.ninecube.reports.providers.impl.UserProviderImpl"
+		 >
+		<property name="groupProvider" ref="groupProvider" />
+		<property name="userManager" ref="userManager" />
+	</bean>
+
+	<bean id="mailProvider"
+		class="net.ninecube.reports.providers.MailProvider" >
+		<constructor-arg>
+			<ref bean="propertiesProvider" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="chartProvider"
+		class="net.ninecube.reports.providers.impl.ChartProviderImpl"
+		>		
+	</bean>
+
+	<bean id="quartzProvider"
+		class="net.ninecube.reports.providers.QuartzProvider"  />
+		
+	<bean id="birtProvider"
+		class="net.ninecube.reports.providers.BirtProvider"  />
+
+	<bean id="schedulerProvider"
+		class="net.ninecube.reports.providers.impl.SchedulerProviderImpl"
+		 />	
+		
+	<bean id="alertProvider"
+		class="net.ninecube.reports.providers.impl.AlertProviderImpl" >
+		<constructor-arg>
+			<ref bean="dataSourceProvider" />
+		</constructor-arg>
+		<constructor-arg>
+			<ref bean="reportLogProvider" />
+		</constructor-arg>
+	</bean>
+		
+	<bean id="addressingHandler"
+		class="org.codehaus.xfire.addressing.AddressingInHandler" />
+
+	<bean name="xfireReportService"
+		class="org.codehaus.xfire.spring.ServiceBean" >
+		<property name="serviceBean" ref="reportService" />
+		<property name="serviceClass"
+			value="net.ninecube.reports.services.ReportService" />
+		<property name="inHandlers">
+			<list>
+				<ref bean="addressingHandler" />
+			</list>
+		</property>
+		<property name="properties">
+			<map>
+				<entry>
+					<key>
+						<value>mtom-enabled</value>
+					</key>
+					<value>true</value>
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="reportService"
+		class="net.ninecube.reports.services.ReportServiceImpl">
+		<property name="reportProvider" ref="reportProvider" />
+		<property name="reportLogProvider" ref="reportLogProvider" />		
+		<property name="schedulerProvider" ref="schedulerProvider" />
+		<property name="userProvider" ref="userProvider" />
+		<property name="directoryProvider" ref="directoryProvider" />
+		<property name="parameterProvider" ref="parameterProvider" />		
+		<property name="dataSourceProvider" ref="dataSourceProvider" />
+		<property name="propertiesProvider" ref="propertiesProvider" />
+	</bean>
+	
+	<bean name="xfireUserService"
+		class="org.codehaus.xfire.spring.ServiceBean" >
+		<property name="serviceBean" ref="userService" />
+		<property name="serviceClass"
+			value="net.ninecube.reports.services.UserService" />
+		<property name="inHandlers">
+			<list>
+				<ref bean="addressingHandler" />
+			</list>
+		</property>		
+	</bean>
+
+	<bean id="userService"
+		class="net.ninecube.reports.services.UserServiceImpl">			
+		<property name="userProvider" ref="userProvider" />		
+	</bean>
+	
+	<bean name="xfireAlertService"
+		class="org.codehaus.xfire.spring.ServiceBean" >
+		<property name="serviceBean" ref="alertService" />
+		<property name="serviceClass"
+			value="net.ninecube.reports.services.AlertService" />
+		<property name="inHandlers">
+			<list>
+				<ref bean="addressingHandler" />
+			</list>
+		</property>		
+	</bean>
+
+	<bean id="alertService"
+		class="net.ninecube.reports.services.AlertServiceImpl">
+		<property name="alertProvider" ref="alertProvider" />		
+		<property name="userProvider" ref="userProvider" />		
+	</bean>
+	
+	<bean name="xfireParameterService"
+		class="org.codehaus.xfire.spring.ServiceBean" >
+		<property name="serviceBean" ref="parameterService" />
+		<property name="serviceClass"
+			value="net.ninecube.reports.services.ParameterService" />
+		<property name="inHandlers">
+			<list>
+				<ref bean="addressingHandler" />
+			</list>
+		</property>		
+	</bean>
+
+	<bean id="parameterService"
+		class="net.ninecube.reports.services.ParameterServiceImpl">
+		<property name="parameterProvider" ref="parameterProvider" />		
+	</bean>
+	
+	<bean name="xfireSchedulerService"
+		class="org.codehaus.xfire.spring.ServiceBean" >
+		<property name="serviceBean" ref="schedulerService" />
+		<property name="serviceClass"
+			value="net.ninecube.reports.services.SchedulerService" />
+		<property name="inHandlers">
+			<list>
+				<ref bean="addressingHandler" />
+			</list>
+		</property>		
+	</bean>
+
+	<bean id="schedulerService"
+		class="net.ninecube.reports.services.SchedulerServiceImpl">
+		<property name="schedulerProvider" ref="schedulerProvider" />		
+		<property name="userProvider" ref="userProvider" />			
+	</bean>
+
+</beans>

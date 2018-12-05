@@ -1,0 +1,22 @@
+
+~~~ =Input ~~~
+Rule=rule.4.txt
+Filter=
+TargetDate=R20070101-20070501
+
+~~~ =Variables ~~~
+promotionPlan.id =112
+
+~~~ Result ~~~
+POINTACCOUNT
+*CUSTOMERID	*POINTTYPE	POINT	
+1000000001	POS积分   0	
+1000000001	网银积分    0	
+1000000001	消费积分    200	
+1000000002	POS积分   0	
+1000000002	网银积分    0	
+1000000002	消费积分    200	
+1000000003	POS积分   0	
+1000000003	网银积分    0	
+1000000003	消费积分    200
+

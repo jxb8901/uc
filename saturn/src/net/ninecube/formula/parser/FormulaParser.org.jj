@@ -1,0 +1,151 @@
+
+/**
+ * 公式引擎语法定义文件
+ * @author JXB
+ */
+
+
+options {
+  MULTI=true;
+  VISITOR=false;
+  STATIC=false;
+  NODE_USES_PARSER=true;
+  UNICODE_INPUT=true;
+  JAVA_UNICODE_ESCAPE=false;
+}
+
+PARSER_BEGIN(FormulaParser)
+
+package net.ninecube.formula.parser;
+
+@SuppressWarnings("unchecked")
+public class FormulaParser {
+  public FormulaParser() {
+  	this("");
+  }
+  
+  public FormulaParser(String s) {
+    this(new java.io.StringReader(s));
+  }
+  
+  public void ReInit(String s) {
+    ReInit(new java.io.StringReader(s));
+  }
+  
+  public ASTFormula parse() throws ParseException {
+    return Formula();
+  }
+}
+
+PARSER_END(FormulaParser)
+
+
+SKIP :
+{
+  " "
+| "\t"
+| <"/*" (~["*"])* "*" (~["/"] (~["*"])* "*")* "/">
+}
+
+TOKEN : /* LITERALS */
+{
+  < DECIMAL_LITERAL: (["0"-"9"])+ ("." (["0"-"9"])+)? >
+}
+
+TOKEN : /* IDENTIFIERS */
+{
+  < IDENTIFIER: (<LETTER>|<UNICODE>|<DIGIT>) (<LETTER>|<UNICODE>|<DIGIT>)* >
+|
+  < #UNICODE: ~["\u0000"-"\u00ff"] >
+|
+  < #LETTER: [".","_","$","!","|","A"-"Z","a"-"z"] >
+|
+  < #DIGIT: ["0"-"9"] >
+}
+
+private ASTFormula Formula() : {}
+{
+  AdditiveFormula() [ "{" PropertiesList() "}" ] <EOF>
+  { return jjtThis; }
+}
+
+private void AdditiveFormula() #void : {}
+{
+  (
+    MultiplicativeFormula() 
+    ( 
+      ( ("+") { jjtThis.setOperator(ASTArith.Operator.add); } | "-" { jjtThis.setOperator(ASTArith.Operator.sub); } ) 
+      MultiplicativeFormula() 
+    )*
+  ) #Arith(>1)
+}
+
+private void MultiplicativeFormula() #void : {}
+{
+  (
+    Term() 
+    ( 
+      ( "*" { jjtThis.setOperator(ASTArith.Operator.mult); } | "/" { jjtThis.setOperator(ASTArith.Operator.div); } ) 
+      Term() 
+    )*
+  ) #Arith(>1)
+}
+
+private void Term() #void : {}
+{
+  "(" AdditiveFormula() ")" 
+| 
+  Factor() 
+| 
+  Function()
+}
+
+private void Factor() : 
+{
+  Token t;
+}
+{
+  t = <DECIMAL_LITERAL>
+  {
+    jjtThis.setFactor(t.image);
+  }
+  ( "%"
+    {
+      jjtThis.setPercent(true);
+    }
+  )?
+}
+
+private void Function() :
+{
+  Token t;
+}
+{
+  t = <IDENTIFIER>
+  {
+    jjtThis.setName(t.image);
+  }
+  [ "(" ArgumentList() ")" ]
+}
+
+private void ArgumentList() #void : {} 
+{
+  Argument() ( "," Argument() )*
+}
+
+private void Argument() :
+{
+  Token t1 = null, t2 = null;
+}
+{
+  ( t1 = <IDENTIFIER> | t1 = <DECIMAL_LITERAL> ) [ ":" ( t2 = <IDENTIFIER> | t2 = <DECIMAL_LITERAL> ) ]
+  {
+    if (t2 == null) { t2 = t1; t1 = null; }
+    jjtThis.setArgument(t1 == null ? "" : t1.image, t2.image);
+  }
+}
+
+private void PropertiesList() #void : {} 
+{
+  Argument() ( "," Argument() )*
+}

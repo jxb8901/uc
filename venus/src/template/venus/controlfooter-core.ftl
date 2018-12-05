@@ -1,0 +1,1 @@
+<#include "/${parameters.templateDir}/xhtml/controlfooter-core.ftl" />

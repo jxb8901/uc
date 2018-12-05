@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="properties">
+			<props>
+				<prop key="jdbc.driver">com.mysql.jdbc.Driver</prop>
+				<prop key="jdbc.url">jdbc:mysql://svnserver:3306/saturntest?useUnicode=true&amp;characterEncoding=utf8</prop>
+				<prop key="jdbc.username">admin</prop>
+				<prop key="jdbc.password">admin</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</prop>
+				<!-- prop key="hibernate.hbm2ddl.auto">create</prop -->
+				<prop key="hibernate.hbm2ddl.auto"></prop>
+				<prop key="hibernate.mapping.classpath.dir">classpath*:/</prop>
+				<prop key="hibernate.mapping.classpath.jar" >classpath*:mars.jar</prop>
+			</props>
+		</property>
+	</bean>
+	
+</beans>

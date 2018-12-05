@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="properties">
+			<props>
+				<prop key="jdbc.driver">net.sourceforge.jtds.jdbc.Driver</prop>
+				<prop key="jdbc.url">jdbc:jtds:sqlserver://162.16.1.147/venus</prop>
+				<prop key="jdbc.username">venus</prop>
+				<prop key="jdbc.password">123</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</prop>
+				<prop key="hibernate.hbm2ddl.auto"></prop>
+				<prop key="hibernate.mapping.classpath.jar">WEB-INF/lib/mars.jar</prop>
+				<prop key="hibernate.mapping.classpath.dir">classpath*:/net/ninecube/test/domain/</prop>
+			</props>
+		</property>
+	</bean>
+	
+</beans>

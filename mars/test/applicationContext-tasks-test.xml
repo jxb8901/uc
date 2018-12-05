@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  - Application context definition for JPetStore's business layer.
+  - Contains bean references to the transaction manager and to the DAOs in
+  - dataAccessContext-local/jta.xml (see web.xml's "contextConfigLocation").
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="taskEngine" class="net.ninecube.core.task.impl.TaskEngineImpl" init-method="init">
+		<property name="quartzScheduler" ref="quartzScheduler" />
+		<property name="tasks">
+			<list>
+				<bean class="net.ninecube.core.task.impl.TaskDefinitionImpl">
+					<property name="idno" value="test1" />
+					<property name="name" value="测试任务1" />
+					<property name="group" value="组1" />
+					<property name="concurrent" value="false" />
+					<property name="taskClass" value="net.ninecube.core.task.impl.TestTask" />
+					<property name="parameters">
+						<list>
+							<bean class="net.ninecube.core.config.impl.FieldConfImpl">
+								<property name="name" value="id" />
+								<property name="value" value="1" />
+							</bean>
+							<bean class="net.ninecube.core.config.impl.FieldConfImpl">
+								<property name="name" value="count" />
+							</bean>
+							<bean class="net.ninecube.core.config.impl.FieldConfImpl">
+								<property name="name" value="date" />
+							</bean>
+							<bean class="net.ninecube.core.config.impl.FieldConfImpl">
+								<property name="name" value="string" />
+							</bean>
+							<bean class="net.ninecube.core.config.impl.FieldConfImpl">
+								<property name="name" value="booleanValue" />
+							</bean>
+							<bean class="net.ninecube.core.config.impl.FieldConfImpl">
+								<property name="name" value="type" />
+							</bean>
+						</list>
+					</property>
+				</bean>
+				<bean class="net.ninecube.core.task.impl.TaskDefinitionImpl">
+					<property name="idno" value="test2" />
+					<property name="name" value="测试任务2" />
+					<property name="group" value="组2" />
+					<property name="taskClass" value="net.ninecube.core.task.impl.TestTask" />
+					<property name="parameters">
+						<list>
+							<bean class="net.ninecube.core.config.impl.FieldConfImpl">
+								<property name="name" value="id" />
+								<property name="value" value="2" />
+							</bean>
+							<bean class="net.ninecube.core.config.impl.FieldConfImpl">
+								<property name="name" value="booleanValue" />
+								<property name="value" value="true" />
+							</bean>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+</beans>

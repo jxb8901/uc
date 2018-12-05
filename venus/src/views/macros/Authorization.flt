@@ -1,0 +1,31 @@
+<#macro auth permit>
+<@ww.if test="%{@net.ninecube.core.context.RequestContext@get().permissionChecker.isGrant(@net.ninecube.core.context.RequestContext@get().getUser(),'${permit}')}">
+  <#nested permit>
+</@ww.if>
+</#macro>
+
+<#macro menugroup name>
+	<#assign mcontent>
+		<#nested>
+	</#assign>
+	<#if mcontent?trim?length&gt;0>
+		<li class="submenu"><a href="#" target="leftFrame">${name}</a>
+			<ul class="level2">${mcontent}
+     		</ul>
+		</li>
+	</#if>
+</#macro>
+
+<#macro menu permit name>
+	<#if permit?length&lt;1 >
+		<span style="color:red">Invalid permit : ${permit}</span>
+		<#return>
+	</#if>
+	<@auth permit>
+	   <li><a href='<@ww.url namespace="/" action="${permit?substring(1)}" />' target="mainFrame">${name}</a></li>
+	</@auth>
+</#macro>
+
+
+
+

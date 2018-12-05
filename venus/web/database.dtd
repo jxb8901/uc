@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+数据库配置：
+	+数据库：名称、类型、版本、
+		+表：名称
+				复合表
+			+字段
+					复合字段
+					动态字段
+				+字段类型
+	+关联：
+		数据库间表关联
+		
+-->
+
+<!ELEMENT databases (database+)>
+
+<!ELEMENT database (table | compositetable | view)+ >
+<!ATTLIST database
+	name CDATA #REQUIRED
+	type CDATA #REQUIRED
+	version CDATA #REQUIRED
+	ip CDATA #IMPLIED
+	port CDATA #IMPLIED
+	user CDATA #IMPLIED
+	password CDATA #IMPLIED
+>
+
+<!ELEMENT table (column+)>
+<!ATTLIST table
+	name CDATA #REQUIRED	
+	alias CDATA #IMPLIED
+	centric (true | false) 'false'
+>
+
+<!ELEMENT compositetable (table+)>
+<!ATTLIST compositetable
+	name CDATA #REQUIRED	
+	alias CDATA #IMPLIED
+	centric (true | false) 'false'
+>
+
+<!ELEMENT view (#PCDATA)>
+<!ATTLIST view
+	name CDATA #REQUIRED
+	alias CDATA #IMPLIED
+	centric (true | false) 'false'
+	table CDATA #REQUIRED
+>
+
+<!--
+	type: 字段类型
+		general: 普通类型
+		dyna: 动态字段，目前仅支持日期型动态字段
+		formula: 公式字段，即字段是由其它字段通过函数组合而来
+		enumer: 枚举字段，字段值为枚举值
+-->
+<!ELEMENT column (#PCDATA)>
+<!ATTLIST column
+	name CDATA #REQUIRED	
+	alias CDATA #IMPLIED
+	sqltype (varchar | date | datetime | time | integer | bigint | autoint | decimal) "varchar"
+	len CDATA #IMPLIED
+	type (general | dyna ) "general"
+	formula CDATA #IMPLIED
+	enumer CDATA #IMPLIED
+	datecolumn (true | false) "false"
+	primarykey (true | false) "false"
+	value CDATA #IMPLIED
+	asstable CDATA #IMPLIED
+	asscolumn CDATA #IMPLIED
+>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  - Application context definition for JPetStore's business layer.
+  - Contains bean references to the transaction manager and to the DAOs in
+  - dataAccessContext-local/jta.xml (see web.xml's "contextConfigLocation").
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="formulaFactory" class="net.ninecube.formula.impl.MapFormulaResolver">
+		<property name="ruleEngine" ref="ruleEngine" />
+	</bean>
+	<!-- metricManager实现了FormulaResolver接口 -->
+	<alias name="metricManager" alias="formulaResolver" />
+	<bean id="typedTargetManagers" abstract="true">
+		<property name="managers">
+			<list>
+				<bean class="net.ninecube.formula.impl.TargetManagerSupport$ListTypedTargetManager">
+					<constructor-arg value="Customer" />
+					<constructor-arg>
+						<list>
+							<bean class="net.ninecube.formula.impl.TargetManagerSupport$TargetEntity">
+								<property name="id" value="1" />
+								<property name="name" value="个人客户" />
+								<property name="rule" value="客户.客户类型=='个人'" />
+							</bean>
+							<bean class="net.ninecube.formula.impl.TargetManagerSupport$TargetEntity">
+								<property name="id" value="2" />
+								<property name="name" value="企业客户" />
+								<property name="rule" value="客户.客户类型=='企业'" />
+							</bean>
+						</list>
+					</constructor-arg>
+				</bean>
+				<bean class="net.ninecube.venus.adaptor.VenusTargetManager">
+					<property name="type" value="CustomerGroup" />
+					<property name="mappingFieldNames">
+						<props>
+							<prop key="id">idno</prop>
+							<prop key="name">name</prop>
+							<prop key="rule">realRule</prop>
+						</props>
+					</property>
+					<property name="entityManager" ref="customergroupManager" />
+				</bean>
+				<!-- 
+					对营销计划的指标该如何计算呢？
+					这里的规则(rule)应该使用promptionplan.idno=idno这样的规则 
+				-->
+				<!-- bean class="net.ninecube.venus.adaptor.VenusTargetManager">
+					<property name="type" value="PromotionPlan" />
+					<property name="mappingFieldNames">
+						<props>
+							<prop key="id">idno</prop>
+							<prop key="name">name</prop>
+							<prop key="rule">rule</prop>
+						</props>
+					</property>
+					<property name="entityManager" ref="promotionplanManager" />
+				</bean -->
+			</list>
+		</property>
+	</bean>
+
+</beans>

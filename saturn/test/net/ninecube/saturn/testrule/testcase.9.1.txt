@@ -1,0 +1,15 @@
+
+~~~ =Input ~~~
+Rule=rule.9.txt
+Filter=客户.性别 == '女'
+TargetDate=D20070101
+
+~~~ =Variables ~~~
+promotionPlan.id =115
+
+~~~ Result ~~~
+SMSBONUSCAL
+*CONTENT
+中秋关怀！！！
+
+

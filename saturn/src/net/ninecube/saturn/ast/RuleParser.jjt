@@ -1,0 +1,608 @@
+options {
+  MULTI=true;
+  VISITOR=true;
+  STATIC=false;
+  NODE_USES_PARSER=true;
+  UNICODE_INPUT=true;
+  JAVA_UNICODE_ESCAPE=false;
+  NODE_PREFIX="";
+  IGNORE_CASE=true;
+}
+
+PARSER_BEGIN(RuleParser)
+
+package net.ninecube.saturn.ast;
+import java.math.*;
+import java.util.*;
+
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import net.ninecube.saturn.*;
+import net.ninecube.saturn.exception.*;
+
+@SuppressWarnings("unchecked")
+public class RuleParser {
+	
+  protected static Log log = LogFactory.getLog(RuleParser.class);
+  private List<Exception> exceptions = new ArrayList<Exception>();
+  public RuleParser(String s) {
+    this(new java.io.StringReader(s));
+  }
+  
+  public void ReInit(String s) {
+    ReInit(new java.io.StringReader(s));
+  }
+  
+  public Start parse(Context context) {
+    try{
+	  Start();
+    }catch(Exception exc){
+      exceptions.add(new RuleSyntaxException(exc.getMessage(),exc));
+   }
+   Start node =  (Start)jjtree.rootNode();
+   log.debug("node : " + ((SimpleNode) node).getDumpStr());
+   if(node !=null && context != null)
+   	node.validate(context,exceptions);
+    if(!exceptions.isEmpty())  throw new RuleSyntaxExceptions(exceptions);
+      return node;
+  }
+
+  public Filter parseFilter(Context context) {
+    try{
+	  Filter();
+    }catch(Exception exc){
+      exceptions.add(new RuleSyntaxException(exc.getMessage(),exc));
+    }
+   Filter node  = null;
+   if(jjtree.nodeArity() > 0 ) node =  (Filter)jjtree.rootNode();
+   if(node !=null && context != null)
+   	node.validate(context,exceptions);
+    if(!exceptions.isEmpty())  throw new RuleSyntaxExceptions(exceptions);
+      return node;
+  }
+ 
+}
+
+PARSER_END(RuleParser)
+
+SKIP : /* WHITE SPACE */
+{
+  " "
+| "\t"
+| "\f"
+}
+
+SPECIAL_TOKEN : /* COMMENTS */
+{
+  <SINGLE_LINE_COMMENT: "//" (~["\n","\r"])*>
+| <FORMAL_COMMENT: "/**" (~["*"])* "*" ("*" | (~["*","/"] (~["*"])* "*"))* "/">
+| <MULTI_LINE_COMMENT: "/*" (~["*"])* "*" ("*" | (~["*","/"] (~["*"])* "*"))* "/">
+}
+
+TOKEN : /* RESERVED WORDS AND LITERALS */
+{
+  < _DEFAULT: "default" >
+| < DO: "do" >
+| < ELSE: "else" | "\u5426\u5219">
+| < EXTENDS: "extends" >
+| < FALSE: "false" >
+| < IF: "if" | "\u5982\u679c">
+| < IMPORT: "import" >
+| < SWITCH: "switch" >
+| < TRUE: "true" >
+| < CASE: "case" >
+
+| < regularRule : "regularRule" >
+| < restrictedRule : "restrictedRule" >
+| < cycleRule : "cycleRule" >
+| < frequency : "frequency" >
+
+| <agg : "agg" >
+| <order : "order" >
+| <desc : "desc" >
+
+
+}
+
+
+TOKEN : {
+ <FUN_MAP_CALL_LITERAL : 
+ 	"<" (~[">"] | "{" | "}" )* ">"
+ >
+}
+	
+
+TOKEN : /* OPERATORS */
+{
+  < NATIONALOP: <LE> | <GE> | <EQ> | <NE> | <GT> | <LT>   >
+| < #GT: ">" >
+| < #LT: "<" >
+| < #EQ: "==" >
+| < #LE: "<=" >
+| < #GE: ">=" >
+| < #NE: "!=" >
+|
+  < ASSIGNOP: <ASSIGN> | <STARASSIGN> | <SLASHASSIGN> | <REMASSIGN> | <PLUSASSIGN> | <MINUSASSIGN> >
+| < #ASSIGN: "=" | "\u7b49\u4e8e" >
+| < #PLUSASSIGN: "+=" >
+| < #MINUSASSIGN: "-=" >
+| < #STARASSIGN: "*=" >
+| < #SLASHASSIGN: "/=" >
+| < #REMASSIGN: "%=" >
+
+| < ADDOP: <PLUS> | <MINUS> >
+| < #PLUS: "+" >
+| < #MINUS: "-" >
+
+| < UNARYOP: <PLUS> | <MINUS> | <BANG> >
+| < #BANG: "not" >
+
+| < MULTIOP: <STAR> | <SLASH> | <REM> >
+| < #STAR: "*" >
+| < #SLASH: "/" >
+| < #REM: "%" >
+
+| < TILDE: "~" >
+| < HOOK: "?" >
+| < COLON: ":" >
+| < SC_OR: "or" | "\u6216\u8005">
+| < SC_AND: "and" | "\u5e76\u4e14">
+| < INCR: "++" >
+| < DECR: "--" >
+| < LSHIFT: "<<" >
+| < RSIGNEDSHIFT: ">>" >
+| < RUNSIGNEDSHIFT: ">>>" >
+}
+
+TOKEN : /* LITERALS */
+{
+  < INTEGER_LITERAL:
+        <DECIMAL_LITERAL> (["l","L"])?
+      | <HEX_LITERAL> (["l","L"])?
+      | <OCTAL_LITERAL> (["l","L"])?
+  >
+|
+  < #DECIMAL_LITERAL: ["1"-"9"] (["0"-"9"])* >
+|
+  < #HEX_LITERAL: "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ >
+|
+  < #OCTAL_LITERAL: "0" (["0"-"7"])* >
+|
+  < FLOATING_POINT_LITERAL:
+        (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)? (["f","F","d","D"])?
+      | "." (["0"-"9"])+ (<EXPONENT>)? (["f","F","d","D"])?
+      | (["0"-"9"])+ <EXPONENT> (["f","F","d","D"])?
+      | (["0"-"9"])+ (<EXPONENT>)? ["f","F","d","D"]
+  >
+|
+  < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+|
+  < STRING_LITERAL:
+    	"\"" <STRING_LITERALCONTENT> "\""
+   |
+       "'" <STRING_LITERALCONTENT_SINGLEQUOTE> "'"
+  >
+|  
+  < #STRING_LITERALCONTENT:
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )*
+  >
+|  
+  < #STRING_LITERALCONTENT_SINGLEQUOTE:
+      (   (~["'","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )*
+  >
+ 
+}
+
+TOKEN : /* IDENTIFIERS */
+{
+  < IDENTIFIER: (<LETTER> (<LETTER>|<DIGIT>)*) 
+  | 
+     ((<DIGIT>)+(<LETTER>)+ (<LETTER>|<DIGIT>)*) >
+|
+  < #LETTER:
+      [
+       "$",
+       "A"-"Z",
+       "_",
+       "a"-"z",
+       "\u00c0"-"\u00d6",
+       "\u00d8"-"\u00f6",
+       "\u00f8"-"\u00ff",
+       "\u0100"-"\u1fff",
+       "\u3040"-"\u318f",
+       "\u3300"-"\u337f",
+       "\u3400"-"\u3d2d",
+       "\u4e00"-"\u9fff",
+       "\uf900"-"\ufaff"
+      ]
+  > 
+|
+  < #DIGIT:
+      [
+       "\u0030"-"\u0039",
+       "\u0660"-"\u0669",
+       "\u06f0"-"\u06f9",
+       "\u0966"-"\u096f",
+       "\u09e6"-"\u09ef",
+       "\u0a66"-"\u0a6f",
+       "\u0ae6"-"\u0aef",
+       "\u0b66"-"\u0b6f",
+       "\u0be7"-"\u0bef",
+       "\u0c66"-"\u0c6f",
+       "\u0ce6"-"\u0cef",
+       "\u0d66"-"\u0d6f",
+       "\u0e50"-"\u0e59",
+       "\u0ed0"-"\u0ed9",
+       "\u1040"-"\u1049"
+      ]
+  >
+}
+
+TOKEN : /* SEPARATORS */
+{
+  < LPAREN: "(" >
+| < RPAREN: ")" >
+| < LBRACE: "{" >
+| < RBRACE: "}" >
+| < LBRACKET: "[" >
+| < RBRACKET: "]" >
+| < SEMICOLON: ";" >
+| < COMMA: "," >
+| < DOT: "." >
+| < CRLF:(("\r")? "\n")+ >
+}
+
+void Start() :
+{}
+{
+	(LOOKAHEAD(1) <CRLF>)*
+	RegularRuleRegion()
+	(CycleRuleRegion() )*
+	<EOF>
+}
+
+void Filter() :
+{}
+{
+	Expression()
+	<EOF>	
+}
+
+void RegularRuleRegion() :
+{}
+{
+	[ LOOKAHEAD(2)  "[" <regularRule> "]" <CRLF> ]  
+	(<CRLF>)*
+	( Statement() )* 
+}
+
+void CycleRuleRegion() :
+{}
+{
+    
+	"[" <cycleRule> RegionProperty()  "]" <CRLF>
+	(<CRLF>)*
+	 (  Statement() )*
+}
+
+void RegionProperty() :
+{}
+{
+	<frequency> <ASSIGNOP> StringLiteral()
+}
+
+/*
+ * Expression syntax follows.
+ */
+
+void Expression()#void :
+{}
+{
+  OrExpression()
+}
+
+void OrExpression()#OrExpression(>1) :
+{}
+{
+  AndExpression() ( <SC_OR> AndExpression() )*
+}
+
+void AndExpression()#AndExpression(>1) :
+{}
+{
+  RelationalExpression() ( <SC_AND> RelationalExpression() )*
+}
+
+void RelationalExpression()#RelationalExpression(>1) :
+{Token t = null;}
+{
+  AddExpression() 
+  ( 
+    t = <NATIONALOP> { jjtThis.setOperator(t.image); } 
+    AddExpression()
+  )?
+}
+
+void AddExpression()#void :
+{Token t=null;}
+{
+  MultiExpression() 
+  ( 
+    t = <ADDOP> 
+    MultiExpression(){ jjtThis.setOperator(t.image); }#AddExpression(2) 
+  ) * 
+}
+
+void MultiExpression()#void :
+{Token t=null;}
+{
+  UnaryExpression()
+  ( 
+    t = <MULTIOP> 
+    UnaryExpression(){ jjtThis.setOperator(t.image); } #MultiExpression(2) 
+  )*
+}
+
+void UnaryExpression()#UnaryExpression(t!=null) :
+{Token t=null;}
+{
+  ( t=<UNARYOP> { jjtThis.setOperator(t.image); })? 
+  PrimaryExpression()
+}
+
+void PrimaryExpression()#void :
+{}
+{
+  NumberLiteral()
+|
+  StringLiteral()
+|
+  BooleanLiteral()  
+|
+  LOOKAHEAD("{")
+  VariableLiteral()  
+| 
+  "(" Expression() ")" 
+|
+  LOOKAHEAD(Name() "(")
+  Function()  
+|
+ FunctionMapCall()  
+|
+  Name()  
+}
+
+void VariableLiteral() :
+{
+	Token t = null ;
+}
+{
+	"{" t = <IDENTIFIER> {jjtThis.setName(t.image); jjtThis.setBeginLine(t.beginLine); jjtThis.setBeginColumn(t.beginColumn);} "}"
+}
+
+
+void Function() :
+{}
+{
+  Name()  
+  "("   ArgumentList()  ")" 
+  
+}
+
+
+void ArgumentList() :
+{}
+{
+[	
+	(	
+	 LOOKAHEAD(Name()":")
+	  NamedArgument()
+	|
+	  Expression()
+	)
+	(
+	   "," 
+	  ( 
+	  LOOKAHEAD(Name()":")
+	  NamedArgument()
+	|
+	  Expression()
+	  )
+	)*  
+]
+}
+
+void NamedArgumentList() :
+{}
+{
+  NamedArgument() ( "," NamedArgument() )*
+}
+
+void NamedArgument() :
+{ Token t=null ; }
+{
+  Name()
+  ":" Expression()
+}
+
+
+void FunctionMapCall() : 
+{Token t = null;}
+{
+	t=<FUN_MAP_CALL_LITERAL>{jjtThis.setMapping(t.image.substring(1,t.image.length()-1));}
+}
+
+BigDecimal NumberLiteral() :
+{ Token t=null; Boolean b=null; }
+{
+  (
+    t=<INTEGER_LITERAL>{ jjtThis.setLiteral(new BigDecimal(t.image));}
+  |
+    t=<FLOATING_POINT_LITERAL>{ jjtThis.setLiteral(new BigDecimal(t.image));}
+  )
+   {return new BigDecimal(t.image); }
+}
+
+void StringLiteral() :
+{ Token t=null; Boolean b=null; }
+{
+  (
+    t=<STRING_LITERAL>{ jjtThis.setLiteral(t.image.substring(1, t.image.length()-1));}
+  )
+  
+}
+
+
+void BooleanLiteral() :
+{ Token t=null; }
+{
+  (
+      t="true"
+    |
+      t="false"
+  )  
+  { jjtThis.setLiteral(Boolean.valueOf(t.image)); }
+}
+
+void Name() :
+{Token t1=null,t2=null;}
+{
+  t1=<IDENTIFIER>{jjtThis.setName(t1.image); jjtThis.setBeginLine(t1.beginLine); jjtThis.setBeginColumn(t1.beginColumn);}
+    ( "." t2 = <IDENTIFIER>{}{jjtThis.setName(jjtThis.getName() + "." + t2.image);})*  
+}
+
+/*
+ * Statement syntax follows.
+ */
+
+void Statement()#void :
+{}
+{
+try{
+	(
+		  LOOKAHEAD(Name() AssignmentOperator())
+		  AssignmentStatement()
+		|
+		  FunctionStatement() 
+		|
+ 		  FunctionMapCall()  
+		|
+		  SwitchStatement()
+	) ((<CRLF>)+ | <EOF> )
+|
+	BlockStatement()
+|
+	IfStatement()
+|  
+	AggStatement()
+| 
+	OrderStatement()
+}catch(ParseException e){
+	exceptions.add(e);
+	skitToNextStatement(null,CRLF );	
+}	
+	
+ }
+ 
+	
+ 
+ void AggStatement() :
+ {}
+ {
+ 	<agg>["("  (Name() {jjtThis.setAggNode(((SimpleNode)jjtree.peekNode())); }) "," StringLiteral() {jjtThis.setAggRefNameNode(((SimpleNode)jjtree.peekNode()));}")"] 
+ 	BlockStatement() {jjtThis.setStmtNode((SimpleNode)jjtree.peekNode());}{}
+ }
+ 
+ void OrderStatement() :
+ {BigDecimal top = null;}
+ {
+   <order> "(" Name() [LOOKAHEAD(1) "," top = NumberLiteral() {jjtThis.setTop(top.intValue());} ]  [LOOKAHEAD(1) ","  <desc> {jjtThis.setAsc(false);} ] ")" 
+   BlockStatement(){jjtThis.setStmtNode((SimpleNode)jjtree.peekNode());}{}
+ 
+ }
+
+void FunctionStatement():
+{}
+{
+  Function() 
+}
+
+void BlockStatement()#BlockStatement(>1) :
+{}
+{
+  "{" (<CRLF>)* (Statement() )* "}"(<CRLF>)* 
+}
+
+void AssignmentStatement() :
+{ String s = null; }
+{
+  Name() 
+  s = AssignmentOperator(){ jjtThis.setOperator(s); } 
+  Expression() 
+}
+
+String AssignmentOperator() #void :
+{ Token t = null; }
+{
+  t = <ASSIGNOP> { return t.image; }
+}
+
+
+void SwitchStatement() :
+{}
+{
+  "switch" "{" (<CRLF>)+
+    ( ( "case" Expression() ":" (<CRLF>)+  Statement() )#SwitchCase )+
+    ( ( "default" ":" (<CRLF>)+ Statement() )#SwitchCase )?
+  "}" 
+}
+
+
+void IfStatement() :
+{}
+{
+  <IF> Expression() 
+(  
+	BlockStatement() 
+|  
+	(<CRLF>)+ Statement() 
+)  
+  [ LOOKAHEAD(1) <ELSE>
+(  
+	BlockStatement() 
+|  
+	(<CRLF>)+ Statement() 
+)   
+   ]
+}
+
+/**
+ *\u8fd4\u56detrue\u5c06\u7ee7\u7eed\u626b\u63cf\u4e0b\u4e00\u4e2a\u8bed\u53e5
+ *\u8fd4\u52a0false\u7ed3\u675f
+ */
+JAVACODE boolean skitToNextStatement(List<Exception>exceptions,int kind){
+	Token t = null;
+	do{
+		t = getNextToken();
+		//log.debug("token : " + tokenImage[t.kind] + " ; is EOF : " + ( t.kind == EOF));
+		if(t.kind == EOF) return false;
+	}while(t.kind != kind);
+	return true;
+}
+

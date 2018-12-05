@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE venus PUBLIC 
+		"-//ninecube//venus1.0//EN" 
+		"http://www.ninecube.net/venus/venus.dtd">
+
+<venus>
+	
+	<package name="rule" cname="规则管理" >
+		<model entity="ruleentity" class="net.ninecube.venus.domain.RuleEntity">
+			<field name="idno" cname="ID" key="true" />
+			<field name="name" cname="名称" req="true" maxlen="20" />
+			<field name="type" cname="类型" req="true" />
+			<field name="mapping" cname="规则映射" req="true" tagtype="textarea" />
+			<field name="rule" cname="规则" req="true" tagtype="textarea" />
+		</model>
+		<transaction name="query" cname="查询" >
+			<input>
+				<queryfield name="name" op="like" />
+				<queryfield name="type" op="eq" />
+			</input>
+		</transaction>
+		<transaction name="read" cname="查看" />
+		<transaction name="create" cname="新建" />
+		<transaction name="update" cname="修改" />
+		<transaction name="delete" cname="删除" />
+	</package>
+	
+</venus>
+
+
+

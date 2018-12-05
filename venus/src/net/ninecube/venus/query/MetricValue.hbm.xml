@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+  <class table="MetricValue" name="net.ninecube.venus.query.MetricValue">
+    <meta inherit="true" attribute="auto-generated"/>
+    <id column="F_Id" access="property" name="id">
+      <generator class="native"/>
+    </id>
+    <component name="dimension" access="property">
+      <property name="type" access="field" column="F_DimensionType"/>
+      <property name="value" access="field" column="F_Dimension"/>
+    </component>
+    <many-to-one column="F_MetricId" access="property" name="metric"/>
+    <any name="target" meta-type="string" access="property" id-type="long">
+      <meta-value class="net.ninecube.venus.domain.CustomerGroup" value="CustomerGroup"/>
+      <meta-value class="net.ninecube.venus.domain.PromotionPlan" value="PromotionPlan"/>
+      <column name="F_TargetType"/>
+      <column name="F_TargetId"/>
+    </any>
+    <property name="value" access="property" column="F_QuotaValue"/>
+    <property name="frequence" type="net.ninecube.core.util.FrequenceUserType" access="field" column="F_Frequence"/>
+    <property name="date" access="field" column="F_Date"/>
+  </class>
+  <query name="getMetricValues"><![CDATA[select v from MetricValue v, Evaluation e, Metric m where v.target.id=:targetId and v.target.class=:targetType and v.frequence=:frequence and v.date between :targetDateStart and :targetDateEnd and v.metric in elements(e.metrics) and e.id=:evaluationId and m.frequence=v.frequence]]></query>
+</hibernate-mapping>

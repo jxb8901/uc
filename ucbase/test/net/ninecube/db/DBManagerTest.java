@@ -82,7 +82,7 @@ public class DBManagerTest extends DBTestCase {
 		this.assertEquals(b.feebyselfOpened, b1.feebyselfOpened);
 		this.assertDateEquals(b.testDate, b1.testDate);
 		
-		b1.branchDesc = "长沙商行";
+		b1.branchDesc = "UC银行";
 		db.update(b1);
 		
 		Branch b2 = (Branch)db.getByWhere("where branch_id=?", new Object[]{"119"});

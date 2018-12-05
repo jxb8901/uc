@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>BNF for fishman.jj</TITLE>
+</HEAD>
+<BODY>
+<H1 ALIGN=CENTER>BNF for fishman.jj</H1>
+<H2 ALIGN=CENTER>NON-TERMINALS</H2>
+<TABLE>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod1">next</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;STATICBLOCK&gt; )+ | ( &lt;BEGINTAGBLOCK&gt; <A HREF="#prod2">properties</A> &lt;TAGEND&gt; ) | ( &lt;ENDTAGBLOCK&gt; <A HREF="#prod2">properties</A> &lt;TAGEND&gt; ) | &lt;EOF&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod2">properties</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;NAME&gt; &lt;EQ&gt; &lt;QUOTE&gt; &lt;NAME&gt; &lt;QUOTE&gt; )*</TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>

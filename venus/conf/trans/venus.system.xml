@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE venus PUBLIC 
+		"-//ninecube//venus1.0//EN" 
+		"http://www.ninecube.net/venus/venus.dtd">
+
+<venus controllerbasedir="net.ninecube.core.trans">
+
+	<package name="system" cname="系统功能">
+		<transaction name="nothing" cname="不做事的交易" />
+		<transaction name="index" cname="" />
+		<transaction name="login" cname="登录"  >
+			<input>
+				<field name="userid" cname="用户ID" req="true"  action="submit"/>
+				<field name="password" cname="密码" req="true" len="6"  action="submit"/>
+			</input>
+		</transaction>
+		
+		<transaction name="main" cname="main" extend="nothing" />
+		<transaction name="top" cname="top" extend="nothing" />
+		<transaction name="left" cname="left" extend="nothing" />
+		<transaction name="home" cname="home" extend="nothing" />
+	</package>
+	
+</venus>
+
+

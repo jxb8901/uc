@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE venus PUBLIC 
+		"-//ninecube//venus1.0//EN" 
+		"http://www.ninecube.net/venus/venus.dtd">
+
+<venus appname="test" appcname="测试" controllerbasedir="net.ninecube.test.trans" viewbasedir="/views">
+	
+	<include file="venus-test.user.xml"/>
+	
+</venus>
+

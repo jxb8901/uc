@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE venus PUBLIC 
+		"-//ninecube//venus1.0//EN" 
+		"http://www.ninecube.net/venus/venus.dtd">
+
+<venus>
+	
+	<package name="report" cname="报表管理" >
+		<package name="reportDefinition" cname="报表定义管理" >
+			<model entity="reportDefinition" class="net.ninecube.reports.objects.Report">
+				<field name="idno" cname="ID" key="true" />
+				<field name="name" cname="名称" req="true" maxlen="20" />
+				<modelfields name="reportChart" cname="图表" model="reportChartDefinition" >name</modelfields>
+				<field name="query" cname="查询语句" tagtype="textarea" />
+				<!--
+				<field name="pdfExportEnabled" cname="PDF" req="true" maxlen="100" />
+				<field name="htmlExportEnabled" cname="HTML" req="true" maxlen="100" />
+				<field name="csvExportEnabled" cname="CSV" req="true" maxlen="100" />
+				<field name="xlsExportEnabled" cname="XLS" req="true" maxlen="100" />
+				<field name="rtfExportEnabled" cname="RTF" req="true" maxlen="100" />
+				<field name="textExportEnabled" cname="TEXT" req="true" maxlen="100" />
+				<field name="excelExportEnabled" cname="EXCEL" req="true" maxlen="100" />
+				<field name="virtualizationEnabled" cname="VIRTUALIZATION" req="true" maxlen="100" />
+				-->
+				<field name="description" cname="描述" maxlen="255"  tagtype="textarea" />
+			</model>
+			<transaction name="query" cname="查询" >
+				<input>
+					<queryfield name="name" op="like" />
+					<queryfield name="description" op="like" tagtype="textfield" />
+				</input>
+				<output>
+					<includefields tagtype="text">idno,name,description</includefields>
+					<mergefield name="idno" tagtype="radio" />
+				</output>
+			</transaction>
+			<transaction name="read" cname="查看" />
+			<transaction name="create" cname="新建" />
+			<transaction name="update" cname="修改" />
+			<transaction name="delete" cname="删除" />
+		</package>
+		<package name="reportChartDefinition" cname="图表定义管理" >
+			<model entity="reportChartDefinition" class="net.ninecube.reports.objects.ReportChart">
+				<field name="idno" cname="ID" key="true" />
+				<field name="name" cname="名称" req="true" maxlen="20" />
+				<field name="query" cname="查询语句" req="true" tagtype="textarea" />
+				<enumfield name="chartType" cname="图表类型" enum="report.chart.type" />
+				<field name="width" cname="宽度" />
+				<field name="height" cname="高度" />
+				<field name="xaxisLabel" cname="X轴标题" />
+				<field name="yaxisLabel" cname="Y轴标题" />
+				<enumfield name="showLegend" cname="是否显示图例" type="bool" />
+				<enumfield name="showTitle" cname="是否显示标题" type="bool" />
+				<enumfield name="showValues" cname="是否显示值" type="bool" />
+				<enumfield name="plotOrientation" cname="方向" enum="report.chart.orientation" />
+				<field name="description" cname="描述" maxlen="255" tagtype="textarea" />
+			</model>
+			<transaction name="query" cname="查询" >
+				<input>
+					<queryfield name="name" op="like" />
+					<queryfield name="description" op="like" tagtype="textfield" />
+				</input>
+				<output>
+					<includefields tagtype="text">idno,name,description</includefields>
+					<mergefield name="idno" tagtype="radio" />
+				</output>
+			</transaction>
+			<transaction name="read" cname="查看" />
+			<transaction name="create" cname="新建" />
+			<transaction name="update" cname="修改" />
+			<transaction name="delete" cname="删除" />
+		</package>
+		<!-- package name="reportTemplate" cname="报表模板管理" >
+			<model entity="reportTemplate" class="net.ninecube.report.domain.ReportTemplate">
+				<field name="idno" cname="ID" key="true" />
+				<field name="name" cname="名称" req="true" maxlen="20" />
+				<field name="description" cname="描述" maxlen="255" />
+				<field name="content" cname="模板文件" tagtype="file" />
+			</model>
+			<transaction name="query" cname="查询" >
+				<input>
+					<queryfield name="name" op="like" />
+				</input>
+			</transaction>
+			<transaction name="read" cname="查看" />
+			<transaction name="create" cname="新建" />
+			<transaction name="update" cname="修改" />
+			<transaction name="delete" cname="删除" />
+		</package -->
+		<package name="reportParameter" cname="报表参数管理" >
+			<model entity="reportParameter" class="net.ninecube.reports.objects.ReportParameter">
+				<field name="idno" cname="ID" key="true" />
+				<field name="name" cname="名称" req="true" maxlen="20" />
+				<enumfield name="type" cname="类型" enum="report.parameter.type"/>
+				<enumfield name="className" cname="java class" enum="report.parameter.class" />
+				<field name="data" cname="数据" />
+				<field name="description" cname="描述" />
+				<enumfield name="required" cname="是否必输" type="bool"/>
+				<enumfield name="multipleSelect" cname="多选" type="bool"/>
+			</model>
+			<transaction name="query" cname="查询" >
+				<input>
+					<queryfield name="name" op="like" />
+				</input>
+				<output>
+					<includefields tagtype="text">idno, name, type, description</includefields>
+					<mergefield name="idno" tagtype="radio" />
+				</output>
+			</transaction>
+			<transaction name="read" cname="查看" />
+			<transaction name="create" cname="新建" />
+			<transaction name="update" cname="修改" />
+			<transaction name="delete" cname="删除" />
+		</package>
+	</package>
+	
+</venus>
+
+
+

@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+
+<project name="tomcat" basedir=".">
+
+<!--
+
+#build.properties
+tomcat.home=/home/applications/jakarta-tomcat-5.5.7
+tomcat.port=8080
+tomcat.user=admin
+tomcat.password=admin
+
+# other
+# web.context=${project.name}
+# web.dir=web
+
+-->
+
+  <!-- ============================================================================== -->
+  <!-- Configure properties                                                           -->
+  <!-- ============================================================================== -->
+  <property name="tomcat.url"      value="http://localhost:${tomcat.port}/manager"/>
+  <property name="catalina.dir" value="${tomcat.home}"/>
+  <property name="web.context" value="${project.name}"/>
+
+  <!-- ============================================================================== -->
+  <!-- Configure the custom Ant tasks for the Manager application                   -->
+  <!-- ============================================================================== -->
+  <taskdef name="tomcat_deploy"    classname="org.apache.catalina.ant.DeployTask"/>
+  <taskdef name="tomcat_list"      classname="org.apache.catalina.ant.ListTask"/>
+  <taskdef name="tomcat_reload"    classname="org.apache.catalina.ant.ReloadTask"/>
+  <taskdef name="tomcat_resources" classname="org.apache.catalina.ant.ResourcesTask"/>
+  <taskdef name="tomcat_roles"     classname="org.apache.catalina.ant.RolesTask"/>
+  <taskdef name="tomcat_start"     classname="org.apache.catalina.ant.StartTask"/>
+  <taskdef name="tomcat_stop"      classname="org.apache.catalina.ant.StopTask"/>
+  <taskdef name="tomcat_undeploy"  classname="org.apache.catalina.ant.UndeployTask"/>
+
+  <!-- ============================================================================== -->
+  <!-- start tomcat web server                                                       -->
+  <!-- ============================================================================== -->
+  <target name="tomcat.start">
+    <java classname="org.apache.catalina.startup.Bootstrap" fork="true">
+            <jvmarg value="-Djava.endorsed.dirs=${catalina.dir}/common/endorsed"/>
+            <jvmarg value="-Dcatalina.base=${catalina.dir}"/>
+            <jvmarg value="-Dcatalina.home=${catalina.dir}"/>
+            <jvmarg value="-Djava.io.tmpdir=${catalina.dir}/temp"/>
+            <arg value="start"/>
+            <classpath>
+                <pathelement location="${catalina.dir}/bin/bootstrap.jar"/>
+            </classpath>
+    </java>
+  </target>
+  
+  <!-- ============================================================================== -->
+  <!-- stop tomcat web server                                                       -->
+  <!-- ============================================================================== -->
+  <target name="tomcat.stop">
+    <echo message="stop Tomcat Web Server..."/>
+    <java classname="org.apache.catalina.startup.Bootstrap" spawn="yes" fork="true">
+            <jvmarg value="-Djava.endorsed.dirs=${catalina.dir}/common/endorsed"/>
+            <jvmarg value="-Dcatalina.base=${catalina.dir}"/>
+            <jvmarg value="-Dcatalina.home=${catalina.dir}"/>
+            <jvmarg value="-Djava.io.tmpdir=${catalina.dir}/temp"/>
+            <arg value="stop"/>
+            <classpath>
+                <pathelement location="${catalina.dir}/bin/bootstrap.jar"/>
+            </classpath>
+    </java>
+    <echo message="Tomcat Web Server has stopped"/>
+  </target>
+
+  <!-- ============================================================================== -->
+  <!-- deploy web app                                                               -->
+  <!-- ============================================================================== -->
+  <target name="tomcat.deploy" description="Install web application"
+          depends="">
+    <tomcat_deploy url="${tomcat.url}" username="${tomcat.user}" password="${tomcat.password}"
+            path="/${web.context}" localWar="file://${basedir}/${web.dir}" update="true"/>
+    <tomcat_start  url="${tomcat.url}" username="${tomcat.user}" password="${tomcat.password}"
+            path="/${web.context}"/>
+  </target>
+
+  <!-- ============================================================================== -->
+  <!-- reload tomcat web server                                                      -->
+  <!-- ============================================================================== -->
+  <target name="tomcat.reload" description="Reload web application"
+          depends="">
+    <tomcat_reload  url="${tomcat.url}" username="${tomcat.user}" password="${tomcat.password}"
+            path="/${web.context}"/>
+  </target>
+
+  <!-- ============================================================================== -->
+  <!-- undeploy web app                                                             -->
+  <!-- ============================================================================== -->
+  <target name="tomcat.undeploy" description="Remove web application">
+    <tomcat_undeploy url="${tomcat.url}" username="${tomcat.user}" password="${tomcat.password}"
+            path="/${web.context}"/>
+  </target>
+
+</project>

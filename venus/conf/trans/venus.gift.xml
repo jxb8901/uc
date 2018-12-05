@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE venus PUBLIC 
+		"-//ninecube//venus1.0//EN" 
+		"http://www.ninecube.net/venus/venus.dtd">
+
+<venus>
+	
+	<package name="gift" cname="礼品管理" >
+		<package name="gift" cname="礼品库" >
+			<model entity="gift" class="net.ninecube.venus.domain.Gift">
+				<field name="idno" cname="ID" key="true" />
+				<field name="seqno" cname="编号" req="true" />
+				<field name="name" cname="名称" req="true" />
+				<field name="image" cname="图片" tagtype="file" />
+				<field name="marketPrice" cname="市场价格" />
+				<field name="costPrice" cname="成本价格" />
+				<field name="availableQuantity" cname="可用数量" />
+				<field name="exchangeRule" cname="兑换规则" />
+				<field name="description" cname="描述" />
+			</model>
+			<transaction name="query" cname="查询" >
+				<input>
+					<queryfield name="name" op="like" />
+					<queryfield name="marketPrice" op="between" />
+					<queryfield name="availableQuantity" op="between" />
+				</input>
+				<output>
+					<includefields tagtype="text">*</includefields>
+					<mergefield name="idno" tagtype="radio" />
+					<mergefield name="image" tagtype="img" />
+				</output>
+			</transaction>
+			<transaction name="read" cname="查看" />
+			<transaction name="create" cname="新建" />
+			<transaction name="update" cname="修改" />
+			<transaction name="delete" cname="删除" />
+			<transaction name="download" cname="下载" />
+		</package>
+		<package name="dispatchinggift" cname="待配送礼品" >
+			<model entity="dispatchingGift" class="net.ninecube.venus.domain.DispatchingGift">
+				<field name="idno" cname="ID" key="true" />
+				<modelfields name="customer" cname="申请客户" model="customer" >customerNo,name</modelfields>
+				<modelfields name="gift" cname="礼品" model="gift" >seqno,name</modelfields>
+				<field name="quantity" cname="数量" />
+				<field name="applyDate" cname="申请日期" >${today}</field>
+			</model>
+			<transaction name="query" cname="查询" >
+				<input>
+					<queryfield name="customer.name" op="like" />
+					<queryfield name="applyDate" op="between" />
+				</input>
+				<output>
+					<includefields tagtype="radio" >idno</includefields>
+					<includefields tagtype="text">customer.customerNo, customer.name, gift.seqno, gift.name</includefields>
+					<includefields tagtype="img">gift.image</includefields>
+					<includefields tagtype="text">quantity,applyDate</includefields>
+				</output>
+			</transaction>
+			<transaction name="read" cname="查看" />
+			<transaction name="create" cname="新建" />
+			<transaction name="update" cname="修改" />
+			<transaction name="delete" cname="删除" />
+		</package>
+	</package>
+	
+</venus>
+
+
+

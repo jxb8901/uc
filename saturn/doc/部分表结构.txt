@@ -1,0 +1,220 @@
+create table dbo.dcms_knc_cust (
+   custid               u_custid             not null,
+   custno               u_custno             not null,
+   brchno               u_brchno             not null,
+   custna               u_acctna             not null,
+   custtp               char(1)              not null,
+   custst               char(1)              not null,
+   idtftp               u_idtftp             not null,
+   idtfno               u_idtfno             not null,
+   opendt               smalldatetime        not null,
+   openus               u_userid             not null,
+   openam               money                null,
+   closdt               smalldatetime        null,
+   closus               u_userid             null,
+   closam               money                null,
+   pmcrtg               char(1)              not null,
+   sthdtg               char(1)              not null
+)
+go
+
+
+Name	Code	Data Type	Primary	Foreign Key	Mandatory
+客户ID	Custid	bigint	FALSE	FALSE	TRUE
+客户号	custno	char(10)	TRUE	FALSE	TRUE
+开户网点	brchno	char(4)	FALSE	FALSE	TRUE
+客户名称	custna	varchar(80)	FALSE	FALSE	TRUE
+客户类别	custtp	char(1)	FALSE	FALSE	TRUE
+客户状态	custst	char(1)	FALSE	FALSE	TRUE
+证件类别	idtftp	char(1)	FALSE	FALSE	TRUE
+证件号码	idtfno	varchar(40)	FALSE	FALSE	TRUE
+开户日期	opendt	smalldatetime	FALSE	FALSE	TRUE
+开户用户	openus	char(5)	FALSE	FALSE	TRUE
+开户金额	openam	Money	FALSE	FALSE	FALSE
+销户日期	closdt	smalldatetime	FALSE	FALSE	FALSE
+销户用户	closus	char(5)	FALSE	FALSE	FALSE
+销户金额	closam	Money	FALSE	FALSE	FALSE
+信贷许可	pmcrtg	char(1)	FALSE	FALSE	TRUE
+是否股东	sthdtg	char(1)	FALSE	FALSE	TRUE
+
+knc_cust	custtp	2	企业客户
+knc_cust	custtp	3	个人客户
+knc_cust	custst	0	关闭
+knc_cust	custst	1	正常
+
+
+
+
+create table dbo.dcms_knc_prsn (
+   custid               u_custid             not null,
+   custno               u_custno             not null,
+   homead               u_addres             null,
+   postcd               u_postcd             null,
+   hometl               u_teleno             null,
+   offctl               u_teleno             null,
+   mobitl               u_teleno             null,
+   faxitl               u_teleno             null,
+   borndt               smalldatetime        null,
+   wkutna               u_unitna             null,
+   indstp               int                  not null,
+   proftp               int                  null,
+   sextp                int                  null,
+   eductp               int                  null
+)
+go
+Name	Code	Data Type	Primary	Foreign Key	Mandatory
+客户ID	Custid	bigint	FALSE	FALSE	TRUE
+客户号	custno	char(10)	TRUE	FALSE	TRUE
+地址	homead	varchar(100)	FALSE	FALSE	FALSE
+邮政编码	postcd	varchar(6)	FALSE	FALSE	FALSE
+家庭电话	hometl	varchar(30)	FALSE	FALSE	FALSE
+办公电话	offctl	varchar(30)	FALSE	FALSE	FALSE
+移动电话	mobitl	varchar(30)	FALSE	FALSE	FALSE
+传真	faxitl	varchar(30)	FALSE	FALSE	FALSE
+出生日期	borndt	smalldatetime	FALSE	FALSE	FALSE
+工作单位名称	wkutna	varchar(80)	FALSE	FALSE	FALSE
+行业分类	Indstp	Int	FALSE	FALSE	TRUE
+职业分类	Proftp	Int	FALSE	FALSE	FALSE
+性别	Sextp	Int	FALSE	FALSE	FALSE
+学历	Eductp	Int	FALSE	FALSE	FALSE
+
+
+/*==============================================================*/
+/* Table: kns_tran                                              */
+/*==============================================================*/
+create table kns_tran (
+   trandt               smalldatetime                  not null,
+   transq               u_seqnce                       not null,
+   tranti               datetime                       not null,
+   tranbr               u_brchno                       not null,
+   tranus               u_userid                       not null,
+   acctno               u_acctno                       null,
+   trantp               u_trantp                       not null,
+   trancy               u_crcycd                       null,
+   smrycd               u_smrycd                       null,
+   dcmtno               u_dcmtno                       null,
+   dcmttp               u_dcmttp                       null,
+   prcscd               u_prcscd                       not null,
+   acetcd               u_acetcd                       null,
+   tranam               money                          not null,
+   transt               char(1)                        not null,
+   servtp               u_servtp                       not null,
+   ckbkus               u_userid                       null,
+   constraint PK_KNS_TRAN primary key (trandt, transq)
+)
+go
+
+Name	Code	Data Type	Primary	Foreign Key	Mandatory
+交易日期	trandt	smalldatetime	TRUE	FALSE	TRUE
+交易流水	transq	u_seqnce	TRUE	FALSE	TRUE
+交易时间	tranti	datetime	FALSE	FALSE	TRUE
+交易网点	tranbr	u_brchno	FALSE	FALSE	TRUE
+交易用户	tranus	u_userid	FALSE	FALSE	TRUE
+交易账号	acctno	u_acctno	FALSE	FALSE	FALSE
+交易类别	trantp	u_trantp	FALSE	FALSE	TRUE
+交易币种	trancy	u_crcycd	FALSE	FALSE	FALSE
+摘要码	smrycd	u_smrycd	FALSE	FALSE	FALSE
+凭证号	dcmtno	u_dcmtno	FALSE	FALSE	FALSE
+凭证类别	dcmttp	u_dcmttp	FALSE	FALSE	FALSE
+处理码	prcscd	u_prcscd	FALSE	FALSE	TRUE
+会计分录码	acetcd	u_acetcd	FALSE	FALSE	FALSE
+交易金额	tranam	money	FALSE	FALSE	TRUE
+交易状态	transt	char(1)	FALSE	FALSE	TRUE
+服务类别	servtp	u_servtp	FALSE	FALSE	TRUE
+复核柜员	ckbkus	u_userid	FALSE	FALSE	FALSE
+
+
+kns_tran	trantp	CS	现金
+kns_tran	trantp	TR	转账
+
+
+kns_tran	smrycd	AC	ATM
+kns_tran	smrycd	AD	ATM
+kns_tran	smrycd	AL	慈善助学
+kns_tran	smrycd	AS	四市通兑
+kns_tran	smrycd	AT	ATM
+kns_tran	smrycd	AU	自动
+kns_tran	smrycd	BA	银联ATM
+kns_tran	smrycd	BI	企业改制医保
+kns_tran	smrycd	BP	银联POS
+kns_tran	smrycd	BR	还贷
+kns_tran	smrycd	CI	贷息
+kns_tran	smrycd	CJ	春节
+kns_tran	smrycd	CL	销户
+kns_tran	smrycd	CS	现金
+kns_tran	smrycd	CT	同城
+kns_tran	smrycd	DC	贴现
+kns_tran	smrycd	DD	票汇
+kns_tran	smrycd	DF	代付
+kns_tran	smrycd	DI	保险委收
+kns_tran	smrycd	DL	其他
+kns_tran	smrycd	DR	贴现赎回
+kns_tran	smrycd	DS	代收
+kns_tran	smrycd	DY	异地医保
+kns_tran	smrycd	FZ	房租
+kns_tran	smrycd	GZ	廉保
+kns_tran	smrycd	HI	医疗保险
+kns_tran	smrycd	IB	调剂资金结息
+kns_tran	smrycd	IC	资金调剂
+kns_tran	smrycd	ID	资金上存
+kns_tran	smrycd	IN	存息
+kns_tran	smrycd	IP	保险费
+kns_tran	smrycd	IU	上存资金结息
+kns_tran	smrycd	JR	节日费
+kns_tran	smrycd	KP	考评
+kns_tran	smrycd	LN	放贷
+kns_tran	smrycd	LP	低保
+kns_tran	smrycd	MC	话费
+kns_tran	smrycd	MG	气费
+kns_tran	smrycd	MI	保费
+kns_tran	smrycd	MT	电费
+kns_tran	smrycd	MW	水费
+kns_tran	smrycd	MX	 国税
+kns_tran	smrycd	NT	银联取款
+kns_tran	smrycd	OP	开户
+kns_tran	smrycd	OT	出入库
+kns_tran	smrycd	PJ	财政工资
+kns_tran	smrycd	PO	消费
+kns_tran	smrycd	PY	付出
+kns_tran	smrycd	RE	贷记卡还款
+kns_tran	smrycd	RR	调整准备金
+kns_tran	smrycd	RV	收入
+kns_tran	smrycd	SA	工资
+kns_tran	smrycd	SC	冲现
+kns_tran	smrycd	SS	收视
+kns_tran	smrycd	ST	冲转
+kns_tran	smrycd	SW	换折
+kns_tran	smrycd	TA	息税
+kns_tran	smrycd	TB	转逾
+kns_tran	smrycd	TE	非交警
+kns_tran	smrycd	TL	电话费
+kns_tran	smrycd	TP	交警
+kns_tran	smrycd	TR	转帐
+kns_tran	smrycd	TT	电汇
+kns_tran	smrycd	TY	特约汇款
+kns_tran	smrycd	UD	元旦
+kns_tran	smrycd	WE	物业管理
+kns_tran	smrycd	WY	五一
+kns_tran	smrycd	XF	罚款
+kns_tran	smrycd	XZ	收费
+kns_tran	smrycd	YL	养老保险
+kns_tran	smrycd	YZ	银证转帐
+kns_tran	smrycd	ZH	储蓄转汇
+kns_tran	smrycd	ZI	来帐
+kns_tran	smrycd	ZO	往帐
+
+kns_tran	transt	1	正常
+kns_tran	transt	2	已经冲帐
+kns_tran	transt	3	冲帐
+
+
+kns_tran	servtp	ATM	ATM
+kns_tran	servtp	CNT	柜台
+kns_tran	servtp	POS	POS
+kns_tran	servtp	SYS	系统自动处理
+kns_tran	servtp	TEL	电话银行
+
+
+
+
+

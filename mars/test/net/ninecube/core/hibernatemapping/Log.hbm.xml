@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+  <class table="TLog" name="net.ninecube.core.hibernatemapping.Log">
+    <meta inherit="true" attribute="auto-generated"/>
+    <id access="property" name="id">
+      <generator class="native"/>
+    </id>
+    <property name="log" access="property"/>
+    <any name="source" meta-type="string" access="property" id-type="long">
+      <meta-value class="net.ninecube.core.hibernatemapping.ASource" value="A"/>
+      <meta-value class="net.ninecube.core.hibernatemapping.BSource" value="B"/>
+      <meta-value class="net.ninecube.core.hibernatemapping.CSource" value="C"/>
+      <column name="tablename"/>
+      <column name="sourceid"/>
+    </any>
+  </class>
+</hibernate-mapping>

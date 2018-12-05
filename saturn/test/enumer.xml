@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE enums PUBLIC 
+		"-//ninecube//enumer1.0//EN" 
+		"http://www.ninecube.net/saturn/enumer.dtd">
+
+<enums>
+	<enum name="user.role" desc="用户角色">
+		<type value="3" desc="系统管理员" />
+		<type value="2" desc="A部门管理员" />
+		<type value="1" desc="操作员" />
+	</enum>
+	
+	<enum name="frequence" desc="频度" >
+		<type value="D" desc="天" />
+		<type value="M" desc="月" />
+		<type value="Q" desc="季" />
+		<type value="Y" desc="年" />
+	</enum>
+	
+	<enum name="metric.type" desc="指标公式类型">
+		<type value="PromotionPlan" desc="营销计划" />
+		<type value="Customer" desc="客户" />
+		<type value="CustomerGroup" desc="客户群" />
+	</enum>
+	
+	<enum name="yesno" desc="是否" javaclass="java.lang.Boolean">
+		<type value="true" desc="是" />
+		<type value="false" desc="否" />
+	</enum>
+	
+	<enum name="yesno.number" desc="是否" >
+		<type value="0" desc="是" />
+		<type value="1" desc="否" />
+	</enum>
+	
+	<enum name="report.chart.orientation" desc="图表方向" javaclass="java.lang.Integer" >
+		<type value="1" desc="水平" />
+		<type value="2" desc="垂直" />
+	</enum>
+	
+	<enum name="report.chart.type" desc="图表类型" javaclass="java.lang.Integer" >
+		<type value="0" desc="柱状图" />
+		<type value="1" desc="饼图" />
+		<type value="2" desc="XY Chart" />
+		<type value="3" desc="Time Chart" />
+		<type value="4" desc="Ring Chart" />
+	</enum>
+	
+	<enum name="report.parameter.class" desc="Java类">
+		<type value="java.lang.String" desc="java.lang.String" />
+		<type value="java.lang.Double" desc="java.lang.Double" />
+		<type value="java.lang.Integer" desc="java.lang.Integer" />
+		<type value="java.lang.Long" desc="java.lang.Long" />
+		<type value="java.math.BigDecimal" desc="java.math.BigDecimal" />
+		<type value="java.util.Date" desc="java.util.Date" />
+		<type value="java.sql.Date" desc="java.sql.Date" />
+		<type value="java.sql.Timestamp" desc="java.sql.Timestamp" />
+		<type value="java.lang.Boolean" desc="java.lang.Boolean" />
+	</enum>
+	
+	<enum name="report.parameter.type" desc="类型">
+		<type value="Date" desc="Date" />
+		<type value="List" desc="List" />
+		<type value="Query" desc="Query" />
+		<type value="Text" desc="Text" />
+		<type value="SubReport" desc="SubReport" />
+		<type value="Boolean" desc="Boolean" />
+	</enum>
+	
+	<enum name="custtp" desc="客户类型">
+		<type value="1" desc="个人" />
+		<type value="8" desc="企业" />
+	</enum>
+	
+	<enum name="custst" desc="客户状态">
+		<type value="0" desc="关闭" />
+		<type value="1" desc="正常" />
+	</enum>
+	
+	<enum name="trantp" desc="交易类型">
+		<type value="PS" desc="POS" />
+		<type value="CS" desc="现金" />
+		<type value="TP" desc="转帐" />
+	</enum>
+	
+	<enum name="transt" desc="交易状态">
+		<type value="1" desc="正常" />
+		<type value="2" desc="已经冲帐" />
+		<type value="3" desc="冲帐" />
+	</enum>
+	
+	<enum name="servtp" desc="交易渠道">
+		<type value="ATM" desc="ATM交易" />
+		<type value="NET" desc="网银交易" />
+		<type value="CNT" desc="柜台交易" />
+		<type value="POS" desc="POS交易" />
+		<type value="SYS" desc="系统自动处理" />
+		<type value="TEL" desc="电话银行" />
+	</enum>
+	
+	<enum name="opertp" desc="操作类型">
+		<type value="1001" desc="异地转帐" />
+		<type value="1002" desc="跨行转帐" />
+		<type value="1003" desc="信用卡还款" />
+		<type value="1004" desc="在线支付" />
+	</enum>
+	
+	<enum name="mrchtp" desc="商户类型">
+		<type value="01" desc="房地产类" />
+		<type value="02" desc="汽车类" />
+		<type value="99" desc="其它类" />
+	</enum>
+	
+	<enum name="sextp" desc="性别">
+		<type value="0" desc="男" />
+		<type value="1" desc="女" />
+	</enum>
+	
+	<enum name="trancy" desc="币种">
+		<type value="01" desc="人民币" />
+		<type value="02" desc="美元" />
+		<type value="03" desc="欧元" />
+	</enum>
+</enums>

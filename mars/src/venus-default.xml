@@ -1,0 +1,65 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+<xwork>
+
+	<include file="webwork-default.xml"/>
+	
+	<include file="config-browser.xml"/>
+	 
+	<package name="venus-default" extends="webwork-default">
+		<result-types>
+			<result-type name="default" class="net.ninecube.core.webwork.result.DefaultResult"/>
+		</result-types>
+		
+		<interceptors>
+		<interceptor name="exception" class="net.ninecube.core.webwork.interceptor.ExceptionInterceptor">
+			<param name="exceptionResult">exception</param>
+		</interceptor>
+            <interceptor name="mutable-params" class="net.ninecube.core.webwork.interceptor.ParametersMutableInterceptor"/>
+            <interceptor name="remove-empty-chain-params" class="net.ninecube.core.webwork.interceptor.RemoveEmptyChainParametersInterceptor"/>
+            <interceptor name="static-params" class="net.ninecube.core.webwork.interceptor.TransactionStaticParametersInterceptor"/>
+            <interceptor name="session" class="net.ninecube.core.webwork.interceptor.SessionInterceptor"/>
+            <interceptor name="AuthorizeInterceptor" class="net.ninecube.core.webwork.interceptor.AuthorizeInterceptor"/>
+			<interceptor-stack name="defaultInterceptorStack">
+				<interceptor-ref name="session"/>
+				<interceptor-ref name="exception"/>
+				<interceptor-ref name="AuthorizeInterceptor"/>
+				<interceptor-ref name="mutable-params"/>
+				<interceptor-ref name="remove-empty-chain-params"/>
+				<interceptor-ref name="alias"/>
+				<interceptor-ref name="servlet-config"/>
+				<interceptor-ref name="prepare"/>
+				<interceptor-ref name="i18n"/>
+				<interceptor-ref name="chain"/>
+				<interceptor-ref name="debugging"/>
+				<interceptor-ref name="model-driven"/>
+				<interceptor-ref name="fileUpload"/>
+				<interceptor-ref name="params"/>
+				<interceptor-ref name="static-params"/><!-- static-params应该比params后执行，以免客户端数据覆盖设置 -->
+				<interceptor-ref name="conversionError"/>
+				<interceptor-ref name="validation">
+					<param name="excludeMethods">input,back,cancel,browse</param>
+				</interceptor-ref>
+				<interceptor-ref name="workflow">
+					<param name="excludeMethods">input,back,cancel,browse</param>
+				</interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="defaultInterceptorStack"/>
+		
+		<global-results>
+			<result name="no.permission" type="freemarker">/views/no.permission.ftl</result>
+			<result name="login" type="redirect-action">
+				<param name="actionName">login</param>
+				<param name="namespace">/system</param>
+			</result>
+			<result name="exception" type="freemarker">/views/exception.ftl</result>
+			<result name="*" type="default"></result>
+		</global-results>
+		
+		<global-exception-mappings>
+			<exception-mapping exception="net.ninecube.core.exception.NoPermissionException" result="no.permission"/>
+			<exception-mapping exception="net.ninecube.core.exception.NoAuthenticationException" result="login"/>
+		</global-exception-mappings>
+    </package>
+
+</xwork>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE databases PUBLIC 
+		"-//ninecube//database1.0//EN" 
+		"http://www.ninecube.net/saturn/database.dtd">
+<?xml-stylesheet type="text/xsl" href="database.xsl"?>
+<databases>
+	<database name="mysql" type="MySQL" version="5.0" >
+		<table name="knc_cust" alias="客户,CUSTOMER,基本客户信息" centric="true">
+			<column name="custno" alias="客户号" sqltype="varchar" primarykey="true" />
+			<column name="custtp" alias="客户类型" formula="SUBSTRING(custno, 1, 1)" enumer="custtp" />
+			<column name="brchno" alias="开户网点" sqltype="varchar" />
+			<column name="custna" alias="客户名称,姓名" sqltype="varchar" />
+			<column name="ntbkfg" alias="是否开通网银" enumer="yesno.number" />
+		</table>
+		<table name="knc_prsn" alias="客户,CUSTOMER,个人客户信息" centric="true">
+			<column name="custno" alias="ID" sqltype="varchar" primarykey="true" asstable="基本客户信息.客户号" />
+			<column name="borndt" alias="出生日期" sqltype="varchar" type="dyna"/>
+			<column name="mobitl" alias="移动电话" sqltype="varchar"/>
+			<column name="sextp" alias="性别" enumer="sextp" />
+		</table>
+		<table name="kns_tran" alias="交易,POS消费,POS">
+			<column name="transq" alias="交易流水,ID" sqltype="varchar" primarykey="true" />
+			<column name="custno" alias="客户号" formula="SUBSTRING(acctno, 1, 10)" asstable="客户.客户号,个人客户信息.ID" />
+			<column name="trandt" alias="交易日期,日期,消费日期" sqltype="varchar"  type="dyna" datecolumn="true"/>
+			<column name="tranti" alias="交易时间" sqltype="time" />
+			<column name="acctno" alias="交易账号" sqltype="varchar" />
+			<column name="tranam" alias="金额,交易金额,消费金额" sqltype="decimal" />
+			<column name="servtp" alias="交易渠道,交易类型" enumer="servtp" />
+			<column name="opertp" alias="操作类型" enumer="opertp" />
+			<column name="mrchtp" alias="商户类型" enumer="mrchtp" />
+			<column name="trancy" alias="币种" enumer="trancy" />
+			<column name="transt" alias="交易状态" enumer="transt" />			
+		</table>
+		<table name="POINTJOURNAL" alias="POINTJOURNAL,积分流水">
+			<column name="ID" alias="流水号" sqltype="autoint" primarykey="true" />
+			<column name="CUSTOMERID" alias="客户号" sqltype="varchar" asstable="客户.客户号,个人客户信息.ID" />
+			<column name="TRANSTYPE" alias="交易表名" sqltype="varchar" />
+			<column name="TRANSID" alias="交易流水号" sqltype="varchar" asstable="交易.ID" />
+			<column name="POINTTYPE" alias="积分类型" sqltype="varchar" />
+			<column name="POINT" alias="积分" sqltype="decimal" />
+			<column name="TRANSTIME" alias="积分产生日期" sqltype="date" />
+			<column name="COMMENTS" alias="备注信息" sqltype="varchar" />
+			<column name="PROMOTIONPLANID" alias="营销计划,营销计划ID" sqltype="bigint" />
+		</table>
+		<table name="POINTACCOUNT" alias="客户积分">
+			<column name="ID" alias="流水号" sqltype="autoint" primarykey="true" />
+			<column name="CUSTOMERID" alias="客户号" sqltype="varchar" asstable="客户.客户号,个人客户信息.ID"/>
+			<column name="POINTTYPE" alias="积分类型" sqltype="varchar" />
+			<column name="POINT" alias="积分" sqltype="decimal" />
+		</table>
+		
+	</database>
+</databases>

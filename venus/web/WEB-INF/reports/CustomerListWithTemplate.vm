@@ -1,0 +1,95 @@
+<html>
+
+<head>
+  <meta HTTP-EQUIV="Pragma" CONTENT="public">
+  <meta HTTP-EQUIV="Cache-Control" CONTENT="max-age=0">
+  <title>OpenReports</title>    
+  <link href="css/openreports.css" rel="stylesheet" type="text/css">    
+  <script type="text/javascript" src="dojo.js"></script>   
+  <script type="text/javascript" src="js/highlight.js"></script>  
+</head>
+    
+<body>
+
+<div class="menu"> 
+
+	<div>
+		<ul class="vert">
+			<li>
+				<img style="padding: 5px" src="images/logo.gif"/>				
+			</li>
+			<li class="logo">
+				OpenReports			
+			</li>
+		</ul>
+	</div>   
+	
+	<div id="usermenu">	    
+  		<ul class="vert">   		 
+          <li>
+          	<a href="logout.action">Logoff</a>          
+          </li>
+          <li>
+          	<a href="userAdmin.action">Preferences</a>             
+          </li> 
+          #if ($user.adminUser)
+          	<li>
+            	<a href="reportAdmin.action">Administration</a>
+            </li>
+          #end  
+          #if ($user.scheduler)
+          <li>
+          	<a href="listScheduledReports.action">Scheduled Reports</a> 
+          </li> 
+          #end
+          <li>
+          	<a href="reportGroup.action">Reports</a> 
+          </li>
+          #if ($user.dashboardUser) 
+          <li>
+          	<a href="dashboard.action">Dashboard</a>          
+          </li>
+          #end       
+        </ul>
+    </div>    
+    
+</div> 	
+	
+<div align="center">
+
+	<a class="back-link img-report-small" href="reportList.action">Back to Reports</a>	  
+	<a class="back-link img-group-small" href="reportGroup.action">Back to Groups</a> 		  
+  		
+  	<br/><br/>
+  	
+  	<div class="img-report important" id="instructions" style="width: 90%;">
+      		<strong>Customer List: </strong>            		
+      		Click on the 'View' links to view DrillDown reports.
+    </div>     
+
+<br>
+	
+$req.setAttribute("results", $results)
+
+#bodytag( Table "name=results" "class=displayTag" "sort=list" "export=true" "pagesize=10")         		
+ 		#tag( Column "property=name" "title=Name" "sortable=true" "headerClass=sortable")  	     
+		#tag( Column "property=city" "title=City" "sortable=true" "headerClass=sortable" )  	     
+		#tag( Column "property=country" "title=Country" "sortable=true" "headerClass=sortable" ) 
+		#tag( Column "value=View Report" "title=Order List" "href=executeReport.action?reportName=Orders By Customer" "paramId=CustomerNumber" "paramProperty=customernumber")  	     				
+		#tag( Column "value=View Chart" "title=Order Break Down"   "href=executeReport.action?reportName=Orders By Product Line" "paramId=CustomerNumber" "paramProperty=customernumber")  	     		
+		#tag( SetProperty "name=export.pdf" "value=true")	
+		#tag( SetProperty "name=export.xml" "value=false")
+		#tag( SetProperty "name=export.pdf.filename" "value=$report.name")
+		#tag( SetProperty "name=export.csv.filename" "value=$report.name")
+		#tag( SetProperty "name=export.excel.filename" "value=$report.name")
+#end
+
+
+Schedule Report: 
+<a href="reportOptions.action?reportId=$report.id&submitSchedule=true&exportType=3">CSV</a> |
+<a href="reportOptions.action?reportId=$report.id&submitSchedule=true&exportType=1">Excel</a> |
+<a href="reportOptions.action?reportId=$report.id&submitSchedule=true&exportType=0">PDF</a>
+     
+</body>
+</html>
+

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE venus PUBLIC 
+		"-//ninecube//venus1.0//EN" 
+		"http://www.ninecube.net/venus/venus.dtd">
+
+<venus appname="venus" appcname="积分营销系统" controllerbasedir="net.ninecube.test.trans" viewbasedir="/WEB-INF/views">
+
+	<include file="venus.system.xml"/>
+	
+	<include file="venus.customergroup.xml"/>
+	
+	<include file="venus.promotionplan.xml"/>
+	
+	<include file="venus.evaluation.xml"/>
+	
+	<include file="venus.metric.xml"/>
+	
+	<include file="venus.ruleentity.xml"/>
+	
+	<include file="venus.gift.xml"/>
+	
+	<include file="venus.customer.xml"/>
+	
+	<include file="venus.user.xml"/>
+	
+	<include file="venus.test.xml"/>
+	
+	<include file="venus.report.xml"/>
+	
+	<include file="venus.manage.xml"/>
+	
+</venus>
+

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  - Application context definition for JPetStore's business layer.
+  - Contains bean references to the transaction manager and to the DAOs in
+  - dataAccessContext-local/jta.xml (see web.xml's "contextConfigLocation").
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="customergroupManager" class="net.ninecube.venus.domain.impl.CustomerGroupManagerImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="queryManager" ref="queryManager"/>
+	</bean>
+	<bean id="promotionplanManager" class="net.ninecube.venus.domain.impl.PromotionPlanManagerImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="queryManager" ref="queryManager"/>
+		<property name="customergroupManager" ref="customergroupManager" />
+		<property name="ruleEngine" ref="ruleEngine"/>
+	</bean>
+	<bean id="ruleentityManager" class="net.ninecube.venus.domain.impl.RuleEntityManagerImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="queryManager" ref="queryManager"/>
+		<property name="ruleEngine" ref="ruleEngine"/>
+	</bean>
+	<bean id="evaluationManager" class="net.ninecube.venus.domain.impl.EvaluationManagerImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="queryManager" ref="queryManager"/>
+		<property name="metricManager" ref="metricManager" />
+	</bean>
+	<bean id="metricvalueManager" class="net.ninecube.venus.query.impl.MetricValueManagerImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="queryManager" ref="queryManager"/>
+	</bean>
+	<bean id="metricManager" class="net.ninecube.venus.domain.impl.MetricManagerImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="queryManager" ref="queryManager"/>
+		<property name="formulaFactory" ref="formulaFactory"/>
+	</bean>
+	<bean id="userManager" class="net.ninecube.venus.domain.impl.UserManagerImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="queryManager" ref="queryManager"/>
+	</bean>
+	<bean id="roleManager" class="net.ninecube.core.domain.GenericEntityManager">
+		<constructor-arg ref="sessionFactory"/>
+		<constructor-arg value="net.ninecube.venus.domain.Role" />
+		<property name="queryManager" ref="queryManager"/>
+	</bean>
+	<bean id="customerManager" class="net.ninecube.venus.domain.impl.CustomerManagerImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="queryManager" ref="queryManager"/>
+	</bean>
+	<bean id="giftManager" class="net.ninecube.venus.domain.impl.GiftManagerImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="queryManager" ref="queryManager"/>
+	</bean>
+	<bean id="dispatchingGiftManager" class="net.ninecube.venus.domain.impl.DispatchingGiftManagerImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="queryManager" ref="queryManager"/>
+	</bean>
+	<bean id="pointtypeManager" class="net.ninecube.venus.domain.impl.PointTypeManagerImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="queryManager" ref="queryManager"/>
+	</bean>
+	<bean id="test_studentManager" class="net.ninecube.test.domain.StudentManager">
+		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="queryManager" ref="queryManager"/>
+	</bean>
+	
+	<bean id="permissionChecker" class="net.ninecube.core.security.PermissionChecker" >
+		<property name="publicPermissions">
+			<list>
+				<value>/system/login</value>
+			</list>
+		</property>
+		<property name="commonUserPermissions">
+			<list>
+				<value>/system/main</value>
+				<value>/system/top</value>
+				<value>/system/left</value>
+				<value>/system/home</value>
+			</list>
+		</property>
+	</bean>
+
+</beans>

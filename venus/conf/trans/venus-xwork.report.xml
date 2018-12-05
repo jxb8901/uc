@@ -1,0 +1,126 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.0//EN" "http://www.opensymphony.com/xwork/xwork-1.0.dtd">
+
+<xwork>
+ 	
+	<package name="reports" namespace="/reports" extends="webwork-default">
+		<result-types>
+			<result-type name="queryReport" class="net.ninecube.reports.dispatcher.QueryReportFreemarkerResult"/>
+		</result-types>
+
+		<interceptors>
+			<interceptor name="default_user" class="net.ninecube.reports.dispatcher.UserInterceptor"/>
+												
+	    	  	<interceptor-stack name="defaultStack">
+				<interceptor-ref name="static-params"/>
+				<interceptor-ref name="params"/>                
+	          	</interceptor-stack>           
+	          	<interceptor-stack name="defaultStackWithSecurity">
+				<interceptor-ref name="defaultStack"/>
+				<interceptor-ref name="default_user"/>                               
+	          	</interceptor-stack> 
+			<interceptor-stack name="debugStack">
+				<interceptor-ref name="timer"/>
+				<interceptor-ref name="logger"/>
+			</interceptor-stack>            
+		</interceptors>   
+    
+		<default-interceptor-ref name="defaultStackWithSecurity"/>  
+    	
+	    	<global-results>
+	            <result name="error" type="freemarker">
+	                <param name="location">ReportError.ftl</param>
+	            </result>
+	        </global-results>
+
+<!-- action -->
+
+        <action name="reportDetail" class="net.ninecube.reports.actions.ReportDetailAction">
+            <result name="input" type="freemarker">
+                <param name="location">ReportDetail.ftl</param>
+            </result>
+            <result name="success" type="chain"> 
+    			<param name="actionName">reportOptions</param> 
+    		</result>                
+        </action>
+        
+        <action name="reportOptions" class="net.ninecube.reports.actions.ReportOptionsAction">
+            <result name="input" type="freemarker">
+                <param name="location">ReportOptions.ftl</param>
+            </result>
+            <result name="success" type="chain"> 
+    			<param name="actionName">reportRun</param> 
+    		</result>                
+    		<result name="queryReport" type="chain"> 
+    			<param name="actionName">queryReport</param> 
+    		</result>     
+    		<result name="chartReport" type="chain"> 
+    			<param name="actionName">chartReport</param> 
+    		</result>
+    		<result name="reportSchedule" type="redirect"> 
+    			<param name="location">reportSchedule.action</param> 
+    		</result>    		 
+        </action>
+        
+	<action name="reportRun" class="net.ninecube.reports.actions.ReportRunAction">                                                    
+		<result name="success" type="redirect"> 
+			<param name="location">reportViewer.action</param> 
+		</result>
+	</action>
+		
+	<action name="reportViewer" class="net.ninecube.reports.actions.ReportViewerAction">                                                    						
+		<result name="success" type="freemarker">
+			<param name="location">ReportViewer.ftl</param>
+		</result>
+	</action>
+		
+	<action name="queryReport" class="net.ninecube.reports.actions.QueryReportAction">                                                    
+		<result name="success" type="redirect">
+			<param name="location">queryReportResult.action</param>
+		</result>
+		<result name="jfreeReport" type="freemarker">
+			<param name="location">JFreeReport.ftl</param>
+		</result>
+	</action>
+		
+	<action name="queryReportResult" class="net.ninecube.reports.actions.QueryReportResultAction">                                                    
+		<result name="success" type="queryReport">
+			<param name="location">QueryReport.ftl</param>
+		</result>
+	</action>
+        
+	<action name="jxlsReport" class="net.ninecube.reports.actions.JXLSReportAction">   			                                                   	
+	</action>
+        
+	<action name="chartReport" class="net.ninecube.reports.actions.ChartReportAction">                                                    
+		<result name="success" type="freemarker">
+			<param name="location">ChartReport.ftl</param>
+		</result>
+	</action>
+        
+	<action name="evaluationChartReport" class="net.ninecube.reports.actions.EvaluationChartReportAction">                                                    
+		<result name="success" type="freemarker">
+			<param name="location">ChartReport.ftl</param>
+		</result>
+	</action>
+        
+ 	<action name="imageLoader" class="net.ninecube.reports.actions.image.ImageLoaderAction">                       
+	</action>
+
+	<action name="editReport" class="net.ninecube.reports.actions.admin.EditReportAction">
+		<result name="input" type="freemarker">
+			<param name="location">EditReport.ftl</param>
+		</result>
+		<interceptor-ref name="defaultStackWithSecurity"/> 
+		<interceptor-ref name="reportAdmin"/>           
+        </action>
+        
+	<action name="editReportParameterMap" class="net.ninecube.reports.actions.admin.EditReportParameterMapAction">
+		<result name="input" type="chain">             
+			<param name="actionName">editReport</param> 
+		</result>   
+		<interceptor-ref name="defaultStackWithSecurity"/> 
+		<interceptor-ref name="reportAdmin"/>                
+	</action>
+
+    </package>  
+</xwork>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+  <class name="net.ninecube.core.Foo">
+    <meta inherit="true" attribute="auto-generated"/>
+    <id access="property" name="id">
+      <generator class="assigned"/>
+    </id>
+    <property name="amount" access="property"/>
+    <property name="date" access="property"/>
+    <property name="name" access="property"/>
+    <map table="FooInfo" access="property" lazy="true" cascade="all" name="properties">
+      <key column="foo"/>
+      <index type="java.lang.String" column="name" length="80"/>
+      <element type="java.lang.String" column="val"/>
+    </map>
+    <many-to-one access="property" cascade="all" name="bar"/>
+    <component name="tao" access="property">
+      <property name="first" access="property" column="F"/>
+      <property name="initial" access="property" column="I"/>
+      <property name="last" access="property" column="L"/>
+    </component>
+  </class>
+</hibernate-mapping>

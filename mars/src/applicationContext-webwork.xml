@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="configManager" class="net.ninecube.core.config.impl.WebConfigManagerImpl"  init-method="init">
+	</bean>
+	<bean id="__actionProxyFactory" class="net.ninecube.core.webwork.VenusActionProxyFactory"  init-method="init">
+	</bean>
+	<bean id="__configrationProvider" class="net.ninecube.core.webwork.VenusConfigurationProvider"  init-method="init">
+		<constructor-arg><ref bean="configManager"/></constructor-arg>
+	</bean>
+	<bean id="__defaultTypeConverter" class="net.ninecube.core.webwork.util.VenusBasicTypeConverter"  init-method="init">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="__typeDeterminer" class="net.ninecube.core.webwork.util.VenusObjectTypeDeterminer"  init-method="init">
+	</bean>
+	<bean id="__validatorAdaptor" class="net.ninecube.core.webwork.ValidatorAdaptorImpl">
+	</bean>
+	<bean id="__validatorManager" class="net.ninecube.core.webwork.VenusActionValidatorManager"  init-method="init">
+		<constructor-arg><ref bean="__validatorAdaptor"/></constructor-arg>
+	</bean>
+	<bean id="queryObjectFactory" class="net.ninecube.core.config.impl.QueryObjectFactoryImpl">
+		<property name="queryManager" ref="queryManager"/>
+	</bean>
+
+</beans>

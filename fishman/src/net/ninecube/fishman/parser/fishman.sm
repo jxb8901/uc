@@ -1,0 +1,15 @@
+
+
+InTemplate {
+				Static			InTemplate				{}
+				Head			Check					{}
+				Tail			
+}
+
+Check {
+				
+}
+
+Dynamic {
+				
+}
